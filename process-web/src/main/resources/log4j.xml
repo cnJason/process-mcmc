@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration debug="false" >
+    <appender name="myConsole" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                   value="%-d{yyyy-MM-dd HH:mm:ss}[%thread] [%c]-[%p] %m%n"/>
+        </layout>
+    </appender>
+    <logger name="com.cyou.fz.soa" additivity="false">
+        <level value="error"/>
+        <appender-ref ref="myConsole"/>
+    </logger>
+
+    <logger name="com.alibaba.dubbo" additivity="false">
+        <level value="error"/>
+        <appender-ref ref="myConsole"/>
+    </logger>
+
+    <logger name="com.cyou.fz.cms.common" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="myConsole"/>
+    </logger>
+
+    <logger name="com.cyou.fz.cms.subject" additivity="false">
+        <level value="debug"/>
+        <appender-ref ref="myConsole"/>
+    </logger>
+
+    <!--<appender name="CoalescingStatistics" class="org.perf4j.log4j.AsyncCoalescingStatisticsAppender">-->
+    <!--<param name="TimeSlice" value="10000"/>-->
+    <!--<appender-ref ref="myConsole"/>-->
+    <!--</appender>-->
+
+    <!--<logger name="org.perf4j.TimingLogger" additivity="false">-->
+    <!--<level value="INFO"/>-->
+    <!--<appender-ref ref="CoalescingStatistics"/>-->
+    <!--</logger>-->
+
+    <!-- 根logger的设置-->
+    <root>
+        <priority value="info"/>
+        <appender-ref ref="myConsole"/>
+    </root>
+</log4j:configuration>

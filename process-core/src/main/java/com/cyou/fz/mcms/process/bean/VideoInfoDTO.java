@@ -1,6 +1,5 @@
 package com.cyou.fz.mcms.process.bean;
 
-import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.List;
@@ -15,14 +14,11 @@ public class VideoInfoDTO implements Serializable{
 
 
 
-    @SerializedName(value = "pic_big")
     private String bigPic;
 
 
-    @SerializedName(value = "pic_small")
     private String smallPic;
 
-    @SerializedName(value = "m3u8")
     private List<M3u8DTO> m3u8s;
 
 

@@ -1,0 +1,106 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "This is a sample.",
+    "version" : "v1",
+    "title" : "Swagger Maven Plugin Sample",
+    "contact" : {
+      "name" : "aaa",
+      "url" : "aaa",
+      "email" : "aaa.com"
+    },
+    "license" : {
+      "name" : "aaa",
+      "url" : "aaa"
+    }
+  },
+  "host" : "localhost:8080",
+  "basePath" : "/api",
+  "tags" : [ {
+    "name" : "login",
+    "description" : "后台用户登陆"
+  } ],
+  "paths" : {
+    "/admin/login" : {
+      "post" : {
+        "tags" : [ "login" ],
+        "summary" : "用户登陆",
+        "description" : "用户登陆)",
+        "operationId" : "login",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "用户名",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "description" : "密码",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "登陆成功标志（true成功；false失败）",
+            "schema" : {
+              "$ref" : "#/definitions/ResponseBoolean"
+            }
+          }
+        }
+      }
+    },
+    "/admin/loginout" : {
+      "post" : {
+        "tags" : [ "login" ],
+        "summary" : "用户登出",
+        "description" : "用户登出)",
+        "operationId" : "loginOut",
+        "responses" : {
+          "200" : {
+            "description" : "登出成功",
+            "schema" : {
+              "$ref" : "#/definitions/ResponseBoolean"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "ResponseBoolean" : {
+      "type" : "object",
+      "properties" : {
+        "result" : {
+          "type" : "string"
+        },
+        "messages" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "fieldErrors" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "string"
+          }
+        },
+        "errors" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "data" : {
+          "type" : "boolean",
+          "default" : false
+        }
+      }
+    }
+  }
+}

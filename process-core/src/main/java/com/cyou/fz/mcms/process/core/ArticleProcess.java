@@ -1,22 +1,22 @@
 package com.cyou.fz.mcms.process.core;
 
-import com.com.cyou.fz.mcms.process.system.Constants;
 import com.cyou.fz.mcms.process.bean.ArticleDTO;
 import com.cyou.fz.mcms.process.bean.ContentDTO;
 import com.cyou.fz.mcms.process.bean.M3u8DTO;
 import com.cyou.fz.mcms.process.bean.VideoInfoDTO;
+import com.cyou.fz.mcms.process.system.Constants;
 import com.cyou.fz.mcms.process.utils.SecurityUtil;
 
 import mjson.Json;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.*;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 
 
@@ -25,7 +25,6 @@ import java.util.regex.Matcher;
  */
 public class ArticleProcess  implements IProcess{
 
-    private Logger logger = LogManager.getRootLogger();
 
 
     /**
@@ -87,7 +86,7 @@ public class ArticleProcess  implements IProcess{
             try {
                 videoId = fetchVideoId(mm3u8);
             } catch (Exception e) {
-                logger.info("no find videoInfo by videoId " + videoId);
+              //  logger.info("no find videoInfo by videoId " + videoId);
                 //如果没找到的话。会被删除掉.
                 mm3u8.appendReplacement(sb2, "");
                 continue;
@@ -135,12 +134,12 @@ public class ArticleProcess  implements IProcess{
 
                     }
                 } else {
-                    logger.info("no find videoInfo by videoId " + videoId);
+                   // logger.info("no find videoInfo by videoId " + videoId);
                     //如果没找到的话。会被删除掉.
                     mm3u8.appendReplacement(sb2, "");
                 }
             } else {
-                logger.info("no find allowed videoId from " + mm3u8.group(0));
+               // logger.info("no find allowed videoId from " + mm3u8.group(0));
                 //TODO:删除缓存.
                    /* if (StringUtils.isNotBlank(newsBo.getNewsKey())) {
                         memcacheTemplate.set(Consts.JOB_NEWS_MEMCACHE_KEY.SAVE_NEWS_ERROR_KEY.getValue() + newsBo.getNewsKey(), newsBo.getNewsKey(), 0);
@@ -152,7 +151,7 @@ public class ArticleProcess  implements IProcess{
         String newC = sb2.toString().replaceAll(
                 "<[iI][fF][rR][aA][mM][eE][^>]?((?!(youtube).com)[^>])*>[^([iI][fF][rR][aA][mM][eE])]*?[iI][fF][rR][aA][mM][eE]>", "");//<[iI][fF][rR][aA][mM][eE][^>]*?>[^([iI][fF][rR][aA][mM][eE])]*?[iI][fF][rR][aA][mM][eE]>
         if (newC.length() < 50) {
-            logger.error("get newsId : " + articleDTO.getContentKey() + " info error or newscontent is not conform !");
+          //  logger.error("get newsId : " + articleDTO.getContentKey() + " info error or newscontent is not conform !");
             /**if (StringUtils.isNotBlank(articleDTO.getContentKey())) {
                 memcacheTemplate.set(Consts.JOB_NEWS_MEMCACHE_KEY.SAVE_NEWS_ERROR_KEY.getValue() + newsBo.getNewsKey(), newsBo.getNewsKey(), 0);
             }**/
@@ -212,7 +211,7 @@ public class ArticleProcess  implements IProcess{
                 }
 
             } catch (Exception e) {
-                logger.error("处理图片错误", e);
+                //logger.error("处理图片错误", e);
                 element.wrap("<a href=\"" + element.attr("src") + "\"></a>");
             }
         }
