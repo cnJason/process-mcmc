@@ -23,8 +23,8 @@ public class ContentTask implements Serializable {
     private Integer channelCode;
 
 
-    @ApiModelProperty(value = "查询参数")
-    private String queryParams;
+    @ApiModelProperty(value = "文章类型：1文章；3:链接")
+    private Integer contentType;
 
     @ApiModelProperty(value = "表达式")
     private String cronExpression;
@@ -48,11 +48,12 @@ public class ContentTask implements Serializable {
         this.channelCode = channelCode;
     }
 
-    public String getQueryParams() {
-        return queryParams;
+
+    public Integer getContentType() {
+        return contentType;
     }
 
-    public void setQueryParams(String queryParams) {
-        this.queryParams = queryParams;
+    public void setContentType(Integer contentType) {
+        this.contentType = contentType;
     }
 }

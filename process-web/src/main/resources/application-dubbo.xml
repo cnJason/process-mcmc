@@ -18,4 +18,8 @@
     <!-- 用dubbo协议在20880端口暴露服务 -->
     <dubbo:protocol name="dubbo" port="${soa.client.port}"/>
 
+    <!--内容查询接口-->
+    <dubbo:reference check="false" id="contentService" interface="com.cyou.fz.services.cms.ContentService" version="${soa.cms.api.version}" timeout="10000" ></dubbo:reference>
+
+
 </beans>

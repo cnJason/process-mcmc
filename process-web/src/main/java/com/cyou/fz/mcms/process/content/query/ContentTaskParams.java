@@ -22,33 +22,18 @@ public class ContentTaskParams extends BaseQueryParams implements Serializable {
     private Integer channelCode;
 
     /**
-     * 分类id.
-     */
-    @ApiModelProperty(value = "分类id")
-    private Integer categoryId;
-
-    /**
      * 文章类型.
      */
     @ApiModelProperty(value = "文章类型")
     private Integer contentType;
 
 
-    @ApiModelProperty(value = "是否需要持久化")
-    private Boolean needStore;
-
 
     @ApiModelProperty(value = "cron表达式")
     private String cronExpression;
 
 
-    public Boolean getNeedStore() {
-        return needStore;
-    }
 
-    public void setNeedStore(Boolean needStore) {
-        this.needStore = needStore;
-    }
 
     public String getCronExpression() {
         return cronExpression;
@@ -66,13 +51,6 @@ public class ContentTaskParams extends BaseQueryParams implements Serializable {
         this.channelCode = channelCode;
     }
 
-    public Integer getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
 
     public Integer getContentType() {
         return contentType;
