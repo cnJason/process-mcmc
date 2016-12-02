@@ -741,6 +741,7 @@
             <artifactId>mjson</artifactId>
             <version>1.4.0</version>
         </dependency>
+        <!--mybatis-plus-->
         <dependency>
             <groupId>com.cyou.fz.common.utils</groupId>
             <artifactId>mybatis-plus</artifactId>

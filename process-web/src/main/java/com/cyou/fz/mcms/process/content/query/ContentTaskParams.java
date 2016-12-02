@@ -34,7 +34,29 @@ public class ContentTaskParams extends BaseQueryParams implements Serializable {
     private Integer contentType;
 
 
+    @ApiModelProperty(value = "是否需要持久化")
+    private Boolean needStore;
 
+
+    @ApiModelProperty(value = "cron表达式")
+    private String cronExpression;
+
+
+    public Boolean getNeedStore() {
+        return needStore;
+    }
+
+    public void setNeedStore(Boolean needStore) {
+        this.needStore = needStore;
+    }
+
+    public String getCronExpression() {
+        return cronExpression;
+    }
+
+    public void setCronExpression(String cronExpression) {
+        this.cronExpression = cronExpression;
+    }
 
     public Integer getChannelCode() {
         return channelCode;
