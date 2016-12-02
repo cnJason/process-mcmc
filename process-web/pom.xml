@@ -730,7 +730,6 @@
             <artifactId>swagger-annotations</artifactId>
             <version>1.5.4</version>
         </dependency>
-
         <!--pinyin4j-->
         <dependency>
             <groupId>com.belerweb</groupId>
@@ -741,6 +740,11 @@
             <groupId>org.sharegov</groupId>
             <artifactId>mjson</artifactId>
             <version>1.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cyou.fz.common.utils</groupId>
+            <artifactId>mybatis-plus</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 </project>

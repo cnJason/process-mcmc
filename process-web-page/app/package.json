@@ -1,8 +1,8 @@
 {
-  "name": "process-web-page",
+  "name": "app",
   "version": "1.0.0",
-  "description": "demo",
-  "author": "cnJaosn",
+  "description": "process web app",
+  "author": "yuxiangchen",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
@@ -10,18 +10,7 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
-    "vue": "^2.1.2",
-    "element-ui": "^1.0.2",
-    "font-awesome": "^4.7.0",
-    "lodash": "^4.16.4",
-    "moment": "^2.15.1",
-    "particles.js": "^2.0.0",
-    "vue-resource": "^1.0.1",
-    "vue-router": "^2.0.0",
-    "vue-upload-component": "^2.0.0-beta",
-    "vuex": "^2.0.0",
-    "flex.css": "^1.1.6",
-    "nprogress": "^0.2.0"
+    "vue": "^2.1.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.4.0",

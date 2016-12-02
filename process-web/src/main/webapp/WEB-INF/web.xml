@@ -37,11 +37,11 @@
         </listener-class>
     </listener>
     <servlet>
-        <servlet-name>WriterServlet</servlet-name>
+        <servlet-name>McmsServlet</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath:admin-conf/applicationServlet.xml</param-value>
+            <param-value>classpath:applicationServlet.xml</param-value>
         </init-param>
         <init-param>
             <param-name>encoding</param-name>
@@ -54,10 +54,8 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>WriterServlet</servlet-name>
-        <url-pattern>*.do</url-pattern>
-        <url-pattern>*.html</url-pattern>
-        <url-pattern>*.htm</url-pattern>
+        <servlet-name>McmsServlet</servlet-name>
+        <url-pattern>*.*</url-pattern>
     </servlet-mapping>
 
 
