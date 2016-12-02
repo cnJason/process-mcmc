@@ -12,15 +12,12 @@ import java.io.Serializable;
 /**
  * Created by cnJason on 2016/12/2.
  */
-@Table(value = "t_content_task")
-@ApiModel(value = "内容任务表")
+@ApiModel(value = "内容任务对象")
 public class ContentTask implements Serializable {
 
 
     private static final long serialVersionUID = -4698654851877929609L;
 
-    @Id(value = "task_id")
-    private Integer id;
 
     @ApiModelProperty(value = "频道号")
     private Integer channelCode;
@@ -41,14 +38,7 @@ public class ContentTask implements Serializable {
         this.cronExpression = cronExpression;
     }
 
-    public Integer getId() {
 
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public Integer getChannelCode() {
         return channelCode;
