@@ -13,14 +13,30 @@ public class ContentTxt implements Serializable{
 
 
     private static final long serialVersionUID = -3483121670509182093L;
+    public static final String COLUMN_CONTENT_KEY = "contentKey";
 
     @Id(value = "content_id")
     private Integer id;
 
+
+    private String contentKey;
+
     private String originalText;
 
     private String processText;
+    
+    private String picList;
+    
+    private String vPicList;
 
+
+    public String getContentKey() {
+        return contentKey;
+    }
+
+    public void setContentKey(String contentKey) {
+        this.contentKey = contentKey;
+    }
 
     public Integer getId() {
         return id;
@@ -44,5 +60,21 @@ public class ContentTxt implements Serializable{
 
     public void setProcessText(String processText) {
         this.processText = processText;
+    }
+
+    public String getPicList() {
+        return picList;
+    }
+
+    public void setPicList(String picList) {
+        this.picList = picList;
+    }
+
+    public String getvPicList() {
+        return vPicList;
+    }
+
+    public void setvPicList(String vPicList) {
+        this.vPicList = vPicList;
     }
 }

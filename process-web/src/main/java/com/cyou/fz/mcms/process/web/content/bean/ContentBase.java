@@ -26,6 +26,10 @@ public class ContentBase implements Serializable {
      * 清洗失败状态
      */
     public static final Integer STATUS_FAILURE = -1;
+    /**
+     * 内容key对象.
+     */
+    public static final String COLUMN_CONTENT_KEY = "contentKey";
 
 
     @Id(value = "id")

@@ -1,6 +1,8 @@
 package com.cyou.fz.mcms.process.web.content.service;
 
+import com.cyou.fz.common.utils.mybatis.bean.Query;
 import com.cyou.fz.common.utils.mybatis.service.BaseServiceImpl;
+import com.cyou.fz.mcms.process.core.bean.ArticleProcessDTO;
 import com.cyou.fz.mcms.process.web.common.SystemConstants;
 import com.cyou.fz.mcms.process.web.content.bean.ContentBase;
 import com.cyou.fz.mcms.process.web.content.bean.ContentCms;
@@ -15,10 +17,10 @@ import com.cyou.fz.services.cms.commons.CmsQueryResult;
 import com.cyou.fz.services.cms.dto.ContentDTO;
 import com.cyou.fz.services.cms.model.ContentQueryParam;
 import com.google.common.collect.Lists;
+import mjson.Json;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.List;
 
@@ -160,12 +162,12 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
                 contentCms.setPublishTime(new Date(contentDTO.getPublishTime()));
                 // 副标题
                 contentCms.setSmallTitle(contentDTO.getSmallTitle());
-                // 设置id
-                contentCms.setId(contentBase.getId());
+                // 设置url
+                contentCms.setPageUrl(contentDTO.getPageUrl());
 
                 contentCmsService.insert(contentCms);
 
-                ContentRequest contentRequest = makeContentRequest(contentDTO,contentBase.getId());
+                ContentRequest contentRequest = makeContentRequest(contentDTO);
                 requestList.add(contentRequest);
             }
 
@@ -179,7 +181,7 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
      * 存储文本和发送内容至待处理列表.
      * @param contentDTO 文本对象.
      */
-    private ContentRequest makeContentRequest(ContentDTO contentDTO, Integer contentId){
+    private ContentRequest makeContentRequest(ContentDTO contentDTO){
         ContentTxt contentTxt = new ContentTxt();
         ContentDTO txtObject = contentService.getContent(contentDTO.getContentKey());
 
@@ -187,7 +189,7 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
         if(txtObject != null){
             // 未清洗文本
             contentTxt.setOriginalText(txtObject.getContentText());
-            contentTxt.setId(contentId);
+            contentTxt.setContentKey(contentDTO.getContentKey());
             contentTxtService.insert(contentTxt);
         }
 
@@ -204,5 +206,65 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
     }
 
 
+    /**
+     * 设置内容为失败.
+     * @param contentRequest
+     * @param articleProcessDTO
+     */
+    public void markContentFailure(ContentRequest contentRequest, ArticleProcessDTO articleProcessDTO){
+        String contentKey = contentRequest.getContentKey();
+        // 设置主对象为清洗失败.且附加时间
+        markContentStatus(contentKey,ContentBase.STATUS_FAILURE);
+        // 转移对象至成功持久队列.
+        contentQueueService.moveRunningTaskToFailQueue(contentKey,articleProcessDTO.getMessage());
+    }
 
+    /**
+     * 设置内容为完成.
+     * @param contentRequest 内容请求对象
+     * @param articleProcessDTO  处理后对象.
+     */
+    public void markContentFinish(ContentRequest contentRequest, ArticleProcessDTO articleProcessDTO) {
+        String contentKey = contentRequest.getContentKey();
+        // 赋值处理后的文本对象.
+        ContentTxt contentTxt = contentTxtService.getByContentKey(contentKey);
+        contentTxt.setProcessText(articleProcessDTO.getContent());
+        // 赋值处理后的图片对象.
+        contentTxt.setPicList(Json.make(articleProcessDTO.getPicList()).toString());
+        // 赋值处理后的视频图片对象.
+        contentTxt.setvPicList(Json.make(articleProcessDTO.getvPicList()).toString());
+        // 修改内容字段.
+        contentTxtService.update(contentTxt);
+
+        // 设置主对象为清洗成功.且附加时间
+        markContentStatus(contentKey,ContentBase.STATUS_SUCCESS);
+        // 转移对象至成功持久队列.
+        contentQueueService.moveRunningTaskToSuccessQueue(contentRequest);
+    }
+
+    /**
+     * 更新内容基础对象.
+     * @param contentKey
+     */
+    private void markContentStatus(String contentKey,Integer status) {
+        // 修改主对象的信息.
+        Query<ContentBase> query  = Query.build(ContentBase.class);
+        query.addEq(ContentBase.COLUMN_CONTENT_KEY,contentKey);
+        ContentBase contentBase = get(query);
+        if(contentBase != null){
+            contentBase.setStatus(status);
+            update(contentBase);
+        }
+        if(status == ContentBase.STATUS_SUCCESS){
+            // 修改内容基本表的时间
+            Query<ContentCms> cmsQuery = Query.build(ContentCms.class);
+            cmsQuery.addEq(ContentCms.COLUMN_CONTENT_KEY,contentKey);
+            ContentCms contentCms = contentCmsService.get(cmsQuery);
+            if(contentCms !=null){
+                contentCms.setProcessTime(new Date());
+                contentCmsService.update(contentCms);
+            }
+        }
+
+    }
 }

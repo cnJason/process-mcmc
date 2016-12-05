@@ -12,6 +12,7 @@ import java.util.Date;
 @Table(value = "t_content_cms")
 public class ContentCms  implements Serializable{
     private static final long serialVersionUID = 4396372259762903379L;
+    public static final String COLUMN_CONTENT_KEY = "contentKey";
 
     @Id(value = "content_id")
     private Integer id;
@@ -47,6 +48,15 @@ public class ContentCms  implements Serializable{
 
     private String gameCodes;
 
+    private String pageUrl;
+
+    public String getPageUrl() {
+        return pageUrl;
+    }
+
+    public void setPageUrl(String pageUrl) {
+        this.pageUrl = pageUrl;
+    }
 
     public Integer getId() {
         return id;

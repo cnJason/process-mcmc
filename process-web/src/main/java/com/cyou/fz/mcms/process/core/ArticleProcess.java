@@ -1,7 +1,7 @@
 package com.cyou.fz.mcms.process.core;
 
-import com.cyou.fz.mcms.process.core.bean.ArticleDTO;
-import com.cyou.fz.mcms.process.core.bean.ContentDTO;
+import com.cyou.fz.mcms.process.core.bean.ArticleProcessDTO;
+import com.cyou.fz.mcms.process.core.bean.ContentProcessDTO;
 import com.cyou.fz.mcms.process.core.bean.M3u8DTO;
 import com.cyou.fz.mcms.process.core.bean.VideoInfoDTO;
 import com.cyou.fz.mcms.process.core.system.Constants;
@@ -30,12 +30,12 @@ public class ArticleProcess  implements IProcess{
      * @param articleDTO 输入待清洗的文章对象
      * @return 输出清洗后的文章对象.
      */
-    public ContentDTO process(ContentDTO articleDTO) {
+    public ContentProcessDTO process(ContentProcessDTO articleDTO) {
         // 获取文章内容.
-        ArticleDTO dto = new ArticleDTO();
-        if(articleDTO instanceof  ArticleDTO){
+        ArticleProcessDTO dto = new ArticleProcessDTO();
+        if(articleDTO instanceof ArticleProcessDTO){
 
-            dto = (ArticleDTO)articleDTO;
+            dto = (ArticleProcessDTO)articleDTO;
             String content = dto.getContent();
             // 过滤敏感词.
             content = filterSensitiveWord(content);
@@ -51,7 +51,7 @@ public class ArticleProcess  implements IProcess{
 
     }
 
-    private ArticleDTO processVlogPicList(ArticleDTO articleDTO) {
+    private ArticleProcessDTO processVlogPicList(ArticleProcessDTO articleDTO) {
 
         String content = articleDTO.getContent();
         StringBuilder sb = new StringBuilder().append(content);
@@ -192,7 +192,7 @@ public class ArticleProcess  implements IProcess{
      * @param articleDTO
      * @return
      */
-    private void processPicList(ArticleDTO articleDTO) {
+    private void processPicList(ArticleProcessDTO articleDTO) {
         List<String> picList = new ArrayList<String>();
         Document doc = Jsoup.parse(articleDTO.getContent());
         Elements scripts = doc.getElementsByTag("img");

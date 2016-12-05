@@ -7,9 +7,7 @@ import java.util.List;
  * 内容处理原子对象.
  * Created by cnJason on 2016/11/21.
  */
-public class ArticleDTO  extends  ContentDTO implements Serializable{
-
-
+public class ArticleProcessDTO extends ContentProcessDTO implements Serializable{
 
 
     /**
@@ -37,7 +35,7 @@ public class ArticleDTO  extends  ContentDTO implements Serializable{
     /**
      * channelId
      */
-    private int channelId;
+    private String channelCode;
 
     /**
      * newsId
@@ -50,7 +48,7 @@ public class ArticleDTO  extends  ContentDTO implements Serializable{
     private String contentKey;
 
 
-    public ArticleDTO() {
+    public ArticleProcessDTO() {
     }
 
 
@@ -87,12 +85,13 @@ public class ArticleDTO  extends  ContentDTO implements Serializable{
         this.isScale = isScale;
     }
 
-    public int getChannelId() {
-        return channelId;
+
+    public String getChannelCode() {
+        return channelCode;
     }
 
-    public void setChannelId(int channelId) {
-        this.channelId = channelId;
+    public void setChannelCode(String channelCode) {
+        this.channelCode = channelCode;
     }
 
     public int getNewsId() {
