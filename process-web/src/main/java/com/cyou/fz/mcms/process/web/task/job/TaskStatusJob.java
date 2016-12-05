@@ -19,11 +19,8 @@ public class TaskStatusJob extends BaseJob {
 
     private  Integer batchSize = 1000;
 
-    private Logger logger = LoggerFactory.getLogger(TaskStatusJob.class);
 
     private ContentQueueService contentQueueService = (ContentQueueService) SpringContextLoader.getBean("contentQueueService");
-
-
 
     private ContentProcessService contentProcessService = (ContentProcessService)SpringContextLoader.getBean("contentProcessService");
 

@@ -22,7 +22,7 @@ public class SchedulerInit {
 
         try {
             logger.info("tasktatus初始化注册定时corn表达式");
-            taskStatusJobUtils.addTaskStatusJobTrigger("1 1/5 * * * ?");
+            taskStatusJobUtils.addTaskStatusJobTrigger("0/5 * * * * ?");
         } catch (SchedulerException e) {
             logger.error("actStatus初始化注册定时corn表达式异常", e);
         }
