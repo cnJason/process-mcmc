@@ -13,6 +13,21 @@ public class ContentBase implements Serializable {
 
 
     private static final long serialVersionUID = 8630761458262267059L;
+
+    /**
+     * 待清洗状态.
+     */
+    public static final Integer STATUS_PENDING = 2;
+    /**
+     * 清洗成功状态
+     */
+    public static final Integer STATUS_SUCCESS = 1;
+    /**
+     * 清洗失败状态
+     */
+    public static final Integer STATUS_FAILURE = -1;
+
+
     @Id(value = "id")
     private Integer id;
 

@@ -9,6 +9,17 @@ public class ContentRequest implements Serializable {
 
 
     private static final long serialVersionUID = -1588793346766428364L;
+    /**
+     * 来源系统: 17173 cms
+     *
+     */
+    public static final String SOURCE_SYSTEM_CMS = "17173cms";
+
+    /**
+     * 来源系统: 17173 vlog
+     */
+    public static final String SOURCE_SYSTEM_VLOG = "17173vlog";
+
 
     /**
      * 内容key.
