@@ -1,0 +1,12 @@
+package com.cyou.fz.mcms.process.web.content.service;
+
+import com.cyou.fz.common.utils.mybatis.service.BaseServiceImpl;
+import com.cyou.fz.mcms.process.web.content.bean.ContentCms;
+import org.springframework.stereotype.Service;
+
+/**
+ * Created by cnJason on 2016/12/2.
+ */
+@Service
+public class ContentCmsService extends BaseServiceImpl<ContentCms>{
+}

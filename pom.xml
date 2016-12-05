@@ -11,8 +11,6 @@
 
     <modules>
         <module>process-web</module>
-        <module>process-core</module>
-        <module>process-common</module>
     </modules>
     <build>
         <plugins>
