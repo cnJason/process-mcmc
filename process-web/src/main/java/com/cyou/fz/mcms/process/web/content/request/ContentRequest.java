@@ -41,6 +41,17 @@ public class ContentRequest implements Serializable {
      */
     private String sourceSystem;
 
+
+    private String originalText;
+
+    public String getOriginalText() {
+        return originalText;
+    }
+
+    public void setOriginalText(String originalText) {
+        this.originalText = originalText;
+    }
+
     public String getContentKey() {
         return contentKey;
     }

@@ -283,7 +283,12 @@ public class ContentQueueService implements IQueueService {
         //加入待执行队列
         redisTemplate.opsForZSet().add(getWaitingQueueIdentification(), requests.getContentKey(), System.currentTimeMillis());
         //加入任务信息表
-        redisTemplate.opsForHash().put(getContentRequestHashIdentification(), requests.getContentKey(), Json.make(requests).toString());
+        Json infoJson = Json.object().set("originalText",requests.getOriginalText())
+                                     .set("contentKey",requests.getContentKey())
+                                     .set("sourceSystem",requests.getSourceSystem())
+                                     .set("channelCode",requests.getChannelCode())
+                                     .set("vlogId",requests.getVlogId());
+        redisTemplate.opsForHash().put(getContentRequestHashIdentification(), requests.getContentKey(), infoJson.toString());
         //加入任务去重集合
         redisTemplate.opsForSet().add(getUniqueKeySetIdentification(), requests.getContentKey());
         return true;
@@ -316,6 +321,7 @@ public class ContentQueueService implements IQueueService {
             contentRequest.setChannelCode(contentDetailInfoJson.at("channelCode").asString());
             contentRequest.setSourceSystem(contentDetailInfoJson.at("sourceSystem").asString());
             contentRequest.setVlogId(contentDetailInfoJson.at("vlogId").asInteger());
+            contentRequest.setOriginalText(contentDetailInfoJson.at("originText").asString());
             contentList.add(contentRequest);
         }
         return contentList;

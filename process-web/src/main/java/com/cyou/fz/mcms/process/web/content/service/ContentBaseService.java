@@ -128,11 +128,16 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
     private void sendListToProcess(CmsQueryResult<ContentDTO> contentDTOCmsQueryResult) {
         List<ContentDTO> contentDTOList = contentDTOCmsQueryResult.getList();
         //contentRequestList(contentRequest对象是供redis队列使用)
+        boolean insertContentCms = false;
         List<ContentRequest> requestList = Lists.newArrayList();
         for (ContentDTO contentDTO : contentDTOList) {
             String contentKey = contentDTO.getContentKey();
+            if(contentKey ==null){
+                continue;
+            }
             ContentBase contentBase = getByContentKey(contentKey);
             if (contentBase == null) {
+                contentBase = new ContentBase();
                 // 设置内容key
                 contentBase.setContentKey(contentDTO.getContentKey());
                 // 设置内容类型
@@ -145,7 +150,7 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
             if (contentBase != null) {
                 // 插入信息对象.
                 ContentCms contentCms = contentCmsService.getByContentKey(contentKey);
-                boolean insertContentCms = false;
+                 insertContentCms = false;
                 if(contentCms == null){
                     contentCms = new ContentCms();
                     insertContentCms = true;
@@ -188,8 +193,7 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
             ContentRequest contentRequest = makeContentRequest(contentDTO);
             requestList.add(contentRequest);
         }
-        // 发送至pending list.此处为初始添加。不清除重复的.
-        contentQueueService.pushTaskToWaitingQueue(requestList, false);
+        contentQueueService.pushTaskToWaitingQueue(requestList, true);
     }
 
     private ContentBase getByContentKey(String contentKey) {
@@ -211,12 +215,14 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
         if (txtObject != null) {
             ContentTxt contentTxt = contentTxtService.getByContentKey(contentDTO.getContentKey());
             // 未清洗文本
-            contentTxt.setOriginalText(txtObject.getContentText());
-            contentTxt.setContentKey(contentDTO.getContentKey());
-            if (contentTxt == null) {
-                contentTxtService.update(contentTxt);
-            } else {
+            if(contentTxt == null) {
+                contentTxt = new ContentTxt();
+                contentTxt.setOriginalText(txtObject.getContentText());
+                contentTxt.setContentKey(contentDTO.getContentKey());
                 contentTxtService.insert(contentTxt);
+            }else {
+                contentTxt.setOriginalText(txtObject.getContentText());
+                contentTxtService.update(contentTxt);
             }
         }
 
@@ -226,6 +232,8 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
         contentRequest.setChannelCode(contentDTO.getChannelCode() + "");
         // 内容key
         contentRequest.setContentKey(contentDTO.getContentKey());
+        // 原始文本信息
+        contentRequest.setOriginalText(txtObject.getContentText());
         // 来源系统
         contentRequest.setSourceSystem(ContentRequest.SOURCE_SYSTEM_CMS);
 
