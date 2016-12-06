@@ -21,6 +21,7 @@ import mjson.Json;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.Date;
 import java.util.List;
 
@@ -67,6 +68,7 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
 
     /**
      * 添加内容任务对象.
+     *
      * @param contentTaskParams 内容任务参数
      * @return 成功失败标识.
      */
@@ -85,13 +87,22 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
         return true;
     }
 
+    public Boolean deleteContentTask(ContentTaskParams contentTaskParams) {
+        ContentTask contentTask = new ContentTask();
+        contentTask.setChannelCode(contentTaskParams.getChannelCode());
+        contentTask.setContentType(contentTaskParams.getContentType());
+        //保存任务至job对象中.
+        contentTaskJobUtils.deleteContentTaskJob(contentTask);
+        return true;
+    }
 
     /**
      * 内容执行任务.
      * 包含获取列表，推送到分析队列.
+     *
      * @param params 内容任务列表.
      */
-    public void processContentTask(ContentTaskParams params){
+    public void processContentTask(ContentTaskParams params) {
         ContentQueryParam contentQueryParam = new ContentQueryParam();
         contentQueryParam.setChannelCode(params.getChannelCode());
         contentQueryParam.setContentType(params.getContentType());
@@ -103,7 +114,7 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
         sendListToProcess(result);
         int totalCount = (int) result.getTotalCount();
 
-        int range = (totalCount / SystemConstants.DEFAULT_PAGE_SIZE) + 1 ;
+        int range = (totalCount / SystemConstants.DEFAULT_PAGE_SIZE) + 1;
 
         for (int i = 2; i <= range; i++) {
             contentQueryParam.setPageNo(i);
@@ -114,26 +125,31 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
     }
 
 
-    private void sendListToProcess(CmsQueryResult<ContentDTO> contentDTOCmsQueryResult){
-        List<ContentDTO> contentDTOList =  contentDTOCmsQueryResult.getList();
-
+    private void sendListToProcess(CmsQueryResult<ContentDTO> contentDTOCmsQueryResult) {
+        List<ContentDTO> contentDTOList = contentDTOCmsQueryResult.getList();
         //contentRequestList(contentRequest对象是供redis队列使用)
         List<ContentRequest> requestList = Lists.newArrayList();
-
         for (ContentDTO contentDTO : contentDTOList) {
-            ContentBase contentBase = new ContentBase();
-            // 设置内容key
-            contentBase.setContentKey(contentDTO.getContentKey());
-            // 设置内容类型
-            contentBase.setContentType(contentDTO.getContentType());
-            // 设置状态为待处理
-            contentBase.setStatus(ContentBase.STATUS_PENDING);
-            // 插入基础对象.
-            contentBase = insert(contentBase);
-
-            if(contentBase != null){
+            String contentKey = contentDTO.getContentKey();
+            ContentBase contentBase = getByContentKey(contentKey);
+            if (contentBase == null) {
+                // 设置内容key
+                contentBase.setContentKey(contentDTO.getContentKey());
+                // 设置内容类型
+                contentBase.setContentType(contentDTO.getContentType());
+                // 设置状态为待处理
+                contentBase.setStatus(ContentBase.STATUS_PENDING);
+                // 插入基础对象.
+                insert(contentBase);
+            }
+            if (contentBase != null) {
                 // 插入信息对象.
-                ContentCms contentCms = new ContentCms();
+                ContentCms contentCms = contentCmsService.getByContentKey(contentKey);
+                boolean insertContentCms = false;
+                if(contentCms == null){
+                    contentCms = new ContentCms();
+                    insertContentCms = true;
+                }
                 // 内容key
                 contentCms.setContentKey(contentDTO.getContentKey());
                 // 频道编号
@@ -143,7 +159,7 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
                 // 分类id
                 contentCms.setCategoryIds(contentDTO.getCategoryIds());
                 // 默认分类
-                contentCms.setDefaultCategory(contentDTO.getDefaultCategory()+"");
+                contentCms.setDefaultCategory(contentDTO.getDefaultCategory() + "");
                 // 描述
                 contentCms.setDescription(contentDTO.getDescription());
                 // 游戏编号
@@ -163,32 +179,45 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
                 // 设置url
                 contentCms.setPageUrl(contentDTO.getPageUrl());
 
-                contentCmsService.insert(contentCms);
-
-                ContentRequest contentRequest = makeContentRequest(contentDTO);
-                requestList.add(contentRequest);
+                if(insertContentCms){
+                    contentCmsService.insert(contentCms);
+                }else {
+                    contentCmsService.update(contentCms);
+                }
             }
-
-            // 发送至pending list.此处为初始添加。不清除重复的.
-            contentQueueService.pushTaskToWaitingQueue(requestList,false);
+            ContentRequest contentRequest = makeContentRequest(contentDTO);
+            requestList.add(contentRequest);
         }
+        // 发送至pending list.此处为初始添加。不清除重复的.
+        contentQueueService.pushTaskToWaitingQueue(requestList, false);
+    }
+
+    private ContentBase getByContentKey(String contentKey) {
+        Query<ContentBase> query = Query.build(ContentBase.class);
+        query.addEq(ContentBase.COLUMN_CONTENT_KEY, contentKey);
+        return get(query);
     }
 
 
     /**
      * 存储文本和发送内容至待处理列表.
+     *
      * @param contentDTO 文本对象.
      */
-    private ContentRequest makeContentRequest(ContentDTO contentDTO){
-        ContentTxt contentTxt = new ContentTxt();
+    private ContentRequest makeContentRequest(ContentDTO contentDTO) {
         ContentDTO txtObject = contentService.getContent(contentDTO.getContentKey());
 
         // 设置初始文本对象.
-        if(txtObject != null){
+        if (txtObject != null) {
+            ContentTxt contentTxt = contentTxtService.getByContentKey(contentDTO.getContentKey());
             // 未清洗文本
             contentTxt.setOriginalText(txtObject.getContentText());
             contentTxt.setContentKey(contentDTO.getContentKey());
-            contentTxtService.insert(contentTxt);
+            if (contentTxt == null) {
+                contentTxtService.update(contentTxt);
+            } else {
+                contentTxtService.insert(contentTxt);
+            }
         }
 
         // 创建内容处理对象
@@ -206,21 +235,23 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
 
     /**
      * 设置内容为失败.
+     *
      * @param contentRequest
      * @param articleProcessDTO
      */
-    public void markContentFailure(ContentRequest contentRequest, ArticleProcessDTO articleProcessDTO){
+    public void markContentFailure(ContentRequest contentRequest, ArticleProcessDTO articleProcessDTO) {
         String contentKey = contentRequest.getContentKey();
         // 设置主对象为清洗失败.且附加时间
-        markContentStatus(contentKey,ContentBase.STATUS_FAILURE);
+        markContentStatus(contentKey, ContentBase.STATUS_FAILURE);
         // 转移对象至成功持久队列.
-        contentQueueService.moveRunningTaskToFailQueue(contentKey,articleProcessDTO.getMessage());
+        contentQueueService.moveRunningTaskToFailQueue(contentKey, articleProcessDTO.getMessage());
     }
 
     /**
      * 设置内容为完成.
-     * @param contentRequest 内容请求对象
-     * @param articleProcessDTO  处理后对象.
+     *
+     * @param contentRequest    内容请求对象
+     * @param articleProcessDTO 处理后对象.
      */
     public void markContentFinish(ContentRequest contentRequest, ArticleProcessDTO articleProcessDTO) {
         String contentKey = contentRequest.getContentKey();
@@ -235,30 +266,31 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
         contentTxtService.update(contentTxt);
 
         // 设置主对象为清洗成功.且附加时间
-        markContentStatus(contentKey,ContentBase.STATUS_SUCCESS);
+        markContentStatus(contentKey, ContentBase.STATUS_SUCCESS);
         // 转移对象至成功持久队列.
         contentQueueService.moveRunningTaskToSuccessQueue(contentRequest);
     }
 
     /**
      * 更新内容基础对象.
+     *
      * @param contentKey
      */
-    private void markContentStatus(String contentKey,Integer status) {
+    private void markContentStatus(String contentKey, Integer status) {
         // 修改主对象的信息.
-        Query<ContentBase> query  = Query.build(ContentBase.class);
-        query.addEq(ContentBase.COLUMN_CONTENT_KEY,contentKey);
+        Query<ContentBase> query = Query.build(ContentBase.class);
+        query.addEq(ContentBase.COLUMN_CONTENT_KEY, contentKey);
         ContentBase contentBase = get(query);
-        if(contentBase != null){
+        if (contentBase != null) {
             contentBase.setStatus(status);
             update(contentBase);
         }
-        if(status == ContentBase.STATUS_SUCCESS){
+        if (status == ContentBase.STATUS_SUCCESS) {
             // 修改内容基本表的时间
             Query<ContentCms> cmsQuery = Query.build(ContentCms.class);
-            cmsQuery.addEq(ContentCms.COLUMN_CONTENT_KEY,contentKey);
+            cmsQuery.addEq(ContentCms.COLUMN_CONTENT_KEY, contentKey);
             ContentCms contentCms = contentCmsService.get(cmsQuery);
-            if(contentCms !=null){
+            if (contentCms != null) {
                 contentCms.setProcessTime(new Date());
                 contentCmsService.update(contentCms);
             }

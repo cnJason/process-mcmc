@@ -18,4 +18,5 @@ public class ContentTxtService extends BaseServiceImpl<ContentTxt> {
         q.addEq(ContentTxt.COLUMN_CONTENT_KEY,contentKey);
         return  get(q);
     }
+
 }

@@ -23,8 +23,9 @@ public class ContentTaskJobUtils extends BaseJobUtils {
 
 
     public void addContentTaskJob(ContentTask contentTask)throws SchedulerException{
-        setJobKey(JOB_NAME_PREFIX + contentTask.getChannelCode());
-        setTriggerKey(TRIGGER_NAME_PREFIX+contentTask.getChannelCode()+"_"+contentTask.getContentType());
+        String key =  contentTask.getChannelCode()+"_"+contentTask.getContentType();
+        setJobKey(JOB_NAME_PREFIX + key);
+        setTriggerKey(TRIGGER_NAME_PREFIX + key);
 
         ContentTaskJobBean contentTaskJobBean = new ContentTaskJobBean();
         contentTaskJobBean.setContentType(contentTask.getContentType());
@@ -45,4 +46,16 @@ public class ContentTaskJobUtils extends BaseJobUtils {
         map.put("contentType",bean.getContentType()+"");
         this.setMap(map);
     }
+
+    public void deleteContentTaskJob(ContentTask contentTask) {
+        String key =  contentTask.getChannelCode()+"_"+contentTask.getContentType();
+        setJobKey(JOB_NAME_PREFIX + key);
+        setTriggerKey(TRIGGER_NAME_PREFIX + key);
+        try {
+            deleteJob(key);
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
