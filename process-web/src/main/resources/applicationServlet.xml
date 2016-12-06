@@ -24,6 +24,9 @@
             </list>
         </property>
     </bean>
+    <bean id="swaggerConfig" class="com.cyou.fz.mcms.process.web.common.SwaggerConfig"/>
+
+    <mvc:annotation-driven/>
 
     <!-- 控制器异常处理 -->
     <bean id="exceptionHandlerExceptionResolver"

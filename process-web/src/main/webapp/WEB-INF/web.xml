@@ -55,7 +55,9 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>McmsServlet</servlet-name>
-        <url-pattern>*.*</url-pattern>
+        <url-pattern>*.do</url-pattern>
+        <url-pattern>*.html</url-pattern>
+        <url-pattern>*.htm</url-pattern>
     </servlet-mapping>
 
 
