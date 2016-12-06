@@ -74,9 +74,10 @@ public class ContentProcessService {
         // 获取处理的返回值.
         articleProcessDTO = (ArticleProcessDTO) articleProcess.process(articleProcessDTO);
 
-        if(articleProcessDTO.getStatus() == ContentProcessDTO.STATUS_SUCCESS){
+        // 如果成功返回成功队列-否则返回失败队列
+        if(articleProcessDTO.isSuccess()){
             contentBaseService.markContentFinish(contentRequest,articleProcessDTO);
-        }else if(articleProcessDTO.getStatus() == ContentProcessDTO.STATUS_FAILURE){
+        }else{
             contentBaseService.markContentFailure(contentRequest,articleProcessDTO);
         }
 

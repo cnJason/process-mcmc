@@ -1,7 +1,5 @@
 package com.cyou.fz.mcms.process.web.task.job;
 
-import com.alibaba.dubbo.common.logger.Logger;
-import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.cyou.fz.mcms.process.core.service.ContentProcessService;
 import com.cyou.fz.mcms.process.web.common.scheduler.BaseJob;
 import com.cyou.fz.mcms.process.web.content.redis.ContentQueueService;
@@ -14,20 +12,21 @@ import java.util.List;
 
 /**
  * Created by cnJason on 2016/12/5.
+ * 循环任务列表中任务.
  */
 public class TaskStatusJob extends BaseJob {
 
-    private  Integer batchSize = 1000;
+    private Integer batchSize = 1000;
 
 
     private ContentQueueService contentQueueService = (ContentQueueService) SpringContextLoader.getBean("contentQueueService");
 
-    private ContentProcessService contentProcessService = (ContentProcessService)SpringContextLoader.getBean("contentProcessService");
+    private ContentProcessService contentProcessService = (ContentProcessService) SpringContextLoader.getBean("contentProcessService");
 
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        int runningQueneNum = (int)contentQueueService.getRunningQueneNum();
+        int runningQueneNum = (int) contentQueueService.getRunningQueneNum();
         int canAssignCount = batchSize - runningQueneNum;
 
         if (canAssignCount <= 0) {

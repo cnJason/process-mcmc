@@ -109,4 +109,13 @@ public class ArticleProcessDTO extends ContentProcessDTO implements Serializable
     public void setContentKey(String contentKey) {
         this.contentKey = contentKey;
     }
+
+    /**
+     * 是否成功.
+     * @return 是否成功.
+     */
+    public boolean isSuccess() {
+        return  getStatus().intValue() == STATUS_SUCCESS;
+
+    }
 }
