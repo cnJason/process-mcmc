@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -35,26 +36,22 @@ public class ContentController {
 
 
     @ResponseBody
-    @RequestMapping(value = "/addContentTask")
+    @RequestMapping(value = "/setContentTask")
     @ApiOperation(value = "添加内容任务",notes = "添加内容任务",httpMethod = "POST",position = 1)
-    public JsonResult addContentTask(@ApiParam(value = "内容任务对象", required = true) @Valid ContentTaskParams contentTaskParams, BindingResult bindingResult){
+    public JsonResult setContentTask(@ApiParam(value = "内容任务对象", required = true) @Valid @RequestBody ContentTaskParams contentTaskParams, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             logger.error(bindingResult.getFieldError().getDefaultMessage());
             return new JsonResult(ResultCode.PARAMS_ERROR,"参数验证错误",null);
         }
-        if(contentTaskParams.getStartTime().compareTo(contentTaskParams.getEndTime()) >= 0){
-            return new JsonResult(ResultCode.PARAMS_ERROR,"开始时间不能大于结束时间",null);
-        }
-
 
         Boolean result =contentBaseService.addContentTask(contentTaskParams);
 
         if(!result){
             return  new JsonResult(ResultCode.EXCEPTION,"任务添加失败",result);
         }
-        return new JsonResult(ResultCode.EXCEPTION,"任务添加失败",result);
-
+        return new JsonResult(ResultCode.SUCCESS,"任务添加成功",result);
     }
+
 
 
 }

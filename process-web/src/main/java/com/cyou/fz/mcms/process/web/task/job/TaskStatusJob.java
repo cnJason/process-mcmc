@@ -9,6 +9,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by cnJason on 2016/12/5.
@@ -16,6 +17,8 @@ import java.util.List;
  */
 public class TaskStatusJob extends BaseJob {
 
+
+    private Logger logger = Logger.getLogger("taskStatusJob");
     private Integer batchSize = 1000;
 
 
@@ -27,6 +30,7 @@ public class TaskStatusJob extends BaseJob {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         int runningQueneNum = (int) contentQueueService.getRunningQueneNum();
+        logger.info("当前运行任务数为:"+ runningQueneNum);
         int canAssignCount = batchSize - runningQueneNum;
 
         if (canAssignCount <= 0) {
@@ -40,5 +44,6 @@ public class TaskStatusJob extends BaseJob {
         }
         contentQueueService.moveWaitingTaskToRunningQueue(requestList);
         contentProcessService.processRequestList(requestList);
+        logger.info("本次任务分配结束:"+ canAssignCount);
     }
 }

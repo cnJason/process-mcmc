@@ -8,7 +8,7 @@
 	 http://www.17173.com/schema/soa http://www.17173.com/schema/soa/soa.xsd" default-lazy-init="true">
 
     <!-- 提供方应用信息，用于计算依赖关系 -->
-    <dubbo:application name="writer"/>
+    <dubbo:application name="mcms-process"/>
     <soa:extension appPassword="" authSkip="true" loginSkip="false" logSkip="false"></soa:extension>
 
 

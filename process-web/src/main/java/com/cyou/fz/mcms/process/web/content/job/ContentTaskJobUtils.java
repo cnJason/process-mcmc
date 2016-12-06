@@ -24,16 +24,15 @@ public class ContentTaskJobUtils extends BaseJobUtils {
 
     public void addContentTaskJob(ContentTask contentTask)throws SchedulerException{
         setJobKey(JOB_NAME_PREFIX + contentTask.getChannelCode());
-        setTriggerKey(TRIGGER_NAME_PREFIX+contentTask.getChannelCode());
+        setTriggerKey(TRIGGER_NAME_PREFIX+contentTask.getChannelCode()+"_"+contentTask.getContentType());
 
         ContentTaskJobBean contentTaskJobBean = new ContentTaskJobBean();
-        contentTaskJobBean.setChannelCode(contentTask.getContentType());
+        contentTaskJobBean.setContentType(contentTask.getContentType());
         contentTaskJobBean.setChannelCode(contentTask.getChannelCode());
 
         setBaseJobBean(contentTaskJobBean);
         setCronExpression(contentTask.getCronExpression());
         addJob(ContentTaskJob.class);
-
 
     }
 

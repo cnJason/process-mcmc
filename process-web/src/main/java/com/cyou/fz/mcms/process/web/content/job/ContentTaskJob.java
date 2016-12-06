@@ -24,11 +24,12 @@ public class ContentTaskJob extends BaseJob {
     public void execute(JobExecutionContext context) throws JobExecutionException {
 
         // 获取查询参数对象.
-        Integer channelCode = (Integer)context.getMergedJobDataMap().get("channelCode");
-        Integer contentType = (Integer)context.getMergedJobDataMap().get("contentType");
+        Integer channelCode = context.getMergedJobDataMap().getIntegerFromString("channelCode");
+        Integer contentType = context.getMergedJobDataMap().getIntegerFromString("contentType");
 
         ContentTaskParams contentTaskParams = new ContentTaskParams();
         contentTaskParams.setChannelCode(channelCode);
+        contentTaskParams.setContentType(contentType);
         // 定时执行操作.
         logger.info("执行内容任务开始"+channelCode+"_"+contentType);
         contentBaseService.processContentTask(contentTaskParams);

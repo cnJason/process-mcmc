@@ -86,8 +86,6 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
     }
 
 
-
-
     /**
      * 内容执行任务.
      * 包含获取列表，推送到分析队列.
@@ -267,4 +265,6 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
         }
 
     }
+
+
 }
