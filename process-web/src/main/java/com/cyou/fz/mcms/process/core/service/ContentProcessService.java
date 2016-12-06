@@ -56,7 +56,7 @@ public class ContentProcessService {
 
 
     private void processVlog(ContentRequest contentRequest) {
-
+        //TODO: vlog的处理.
     }
 
     private void proceessContent(ContentRequest contentRequest) {
@@ -80,10 +80,6 @@ public class ContentProcessService {
         }else{
             contentBaseService.markContentFailure(contentRequest,articleProcessDTO);
         }
-
-
-
-
 
     }
 }

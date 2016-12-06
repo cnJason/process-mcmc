@@ -103,7 +103,7 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
         sendListToProcess(result);
         int totalCount = (int) result.getTotalCount();
 
-        int range = totalCount / SystemConstants.DEFAULT_PAGE_SIZE + 1 ;
+        int range = (totalCount / SystemConstants.DEFAULT_PAGE_SIZE) + 1 ;
 
         for (int i = 2; i <= range; i++) {
             contentQueryParam.setPageNo(i);

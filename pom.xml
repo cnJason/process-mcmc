@@ -67,7 +67,7 @@
         <log4j.version>1.2.16</log4j.version>
         <slf4j.version>1.6.2</slf4j.version>
         <jackson.version>1.9.13</jackson.version>
-        <fasterxml-jackson.version>2.2.0</fasterxml-jackson.version>
+        <fasterxml-jackson.version>2.7.4</fasterxml-jackson.version>
         <htmlparser.version>2.1</htmlparser.version>
         <jdom.version>2.0.2</jdom.version>
         <servlet-api.version>2.5</servlet-api.version>
