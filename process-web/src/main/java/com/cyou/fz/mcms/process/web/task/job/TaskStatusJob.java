@@ -21,7 +21,7 @@ public class TaskStatusJob extends BaseJob {
     private Logger logger = Logger.getLogger("taskStatusJob");
     private Integer batchSize = 1000;
 
-    private long timeout = 50000;
+    private long timeout = 10000;
 
 
     private ContentQueueService contentQueueService = (ContentQueueService) SpringContextLoader.getBean("contentQueueService");
