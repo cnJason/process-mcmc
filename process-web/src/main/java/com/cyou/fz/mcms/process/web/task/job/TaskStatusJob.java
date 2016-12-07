@@ -21,6 +21,8 @@ public class TaskStatusJob extends BaseJob {
     private Logger logger = Logger.getLogger("taskStatusJob");
     private Integer batchSize = 1000;
 
+    private long timeout = 50000;
+
 
     private ContentQueueService contentQueueService = (ContentQueueService) SpringContextLoader.getBean("contentQueueService");
 
@@ -36,7 +38,6 @@ public class TaskStatusJob extends BaseJob {
         if (canAssignCount <= 0) {
             return;
         }
-
         List<ContentRequest> requestList = contentQueueService.fetchTasksFromWaitingQueue(canAssignCount);
 
         if (requestList.size() == 0) {
@@ -45,5 +46,8 @@ public class TaskStatusJob extends BaseJob {
         contentQueueService.moveWaitingTaskToRunningQueue(requestList);
         contentProcessService.processRequestList(requestList);
         logger.info("本次任务分配结束:"+ canAssignCount);
+
+        contentQueueService.refreshBreakedQueue(timeout);
+        logger.info("刷新任务完成");
     }
 }

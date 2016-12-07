@@ -33,9 +33,6 @@ import java.util.regex.Matcher;
  */
 public class ArticleProcess  implements IProcess{
 
-    public static final String[] IMAGE_TYPE = {"jpg","gif","png","bmp","jpeg"};
-
-
 
     /**
      * 主方法实现.
@@ -55,7 +52,8 @@ public class ArticleProcess  implements IProcess{
             content = processContent(content);
             dto.setContent(content);
             //替换图片信息且获得picList.
-            processPicList(dto); //替换图片且获得vlogPicList
+            processPicList(dto);
+            //替换图片且获得vlogPicList
             return  processVlogPicList(dto);
         }else {
             return dto;
@@ -105,20 +103,24 @@ public class ArticleProcess  implements IProcess{
             if (StringUtils.isNotBlank(videoId) && StringUtils.isNumeric(videoId)) {
                 Json response = Json.read(Constants.VLOG_VIDEO_INFO_URL + videoId);
                 if (StringUtils.isNotBlank(response.toString()) && response.has("data")) {
+
                     Json vlogData = response.at("data");
 
                     String videoPic = vlogData.at("pic_small").asString();
+
                     videoInfoDTO.setSmallPic(videoPic);
 
                     List<Json> m3u8s = vlogData.at("m3u8").asJsonList();
+
                     List<M3u8DTO> m3u8DTOList = new ArrayList<M3u8DTO>();
+
                     //TODO:判断是否在sohucdn上
-                       /* if (!videoPushSohuCdn(videoId)) {
-                            if (StringUtils.isNotBlank(newsBo.getNewsKey())) {
-                                memcacheTemplate.set(Consts.JOB_NEWS_MEMCACHE_KEY.SAVE_NEWS_ERROR_KEY.getValue() + newsBo.getNewsKey(), newsBo.getNewsKey(), 0);
-                            }
-                            return null;
-                        }*/
+                   /* if (!videoPushSohuCdn(videoId)) {
+                        if (StringUtils.isNotBlank(newsBo.getNewsKey())) {
+                            memcacheTemplate.set(Consts.JOB_NEWS_MEMCACHE_KEY.SAVE_NEWS_ERROR_KEY.getValue() + newsBo.getNewsKey(), newsBo.getNewsKey(), 0);
+                        }
+                        return null;
+                    }*/
 
                     for (Json m3u8 : m3u8s) {
                         M3u8DTO m3u8DTO = new M3u8DTO();
