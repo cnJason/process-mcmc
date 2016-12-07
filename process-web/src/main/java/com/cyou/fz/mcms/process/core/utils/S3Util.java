@@ -176,4 +176,12 @@ public class S3Util {
         }
     }
 
+
+    public static void main(String[] args) throws Exception {
+
+        S3Util s3Util = getInstance("http://ds.internal.17173cdn.com","07qu2c","9QrMEf1DevBwSzpXOa");
+        PutObjectResult result = s3Util.putRemoteImage("http://img03.3dmgame.com/uploads/allimg/161207/271_161207062655_1.jpg","YWxqaGBf/mobileme/pic/cms/2016/12/7/2413.jpg");
+        System.out.println(result.getETag());
+    }
+
 }

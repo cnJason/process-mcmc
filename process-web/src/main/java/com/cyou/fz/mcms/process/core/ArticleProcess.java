@@ -253,7 +253,11 @@ public class ArticleProcess  implements IProcess{
             urlBuffer.append("http://" + SystemConstants.cdnDomain + "/").append("mobileme/pic/cms").append("/").append(date).append("/").append(randomNum).append(".").append(imageType);
             S3Util s3Util = S3Util.getInstance(SystemConstants.endpoint, SystemConstants.accessKey, SystemConstants.secretKey);
             try {
-                PutObjectResult result = s3Util.putRemoteImage(url, SystemConstants.cdnDomainKey + "mobileme/pic/cms/" + date + "/" + randomNum + "."+ imageType);
+                String cdnDomainKeyStr = "";
+                if(SystemConstants.cdnDomainKey !=null){
+                    cdnDomainKeyStr = SystemConstants.cdnDomainKey;
+                }
+                PutObjectResult result = s3Util.putRemoteImage(url, cdnDomainKeyStr + "mobileme/pic/cms/" + date + "/" + randomNum + "."+ imageType);
                 if (result != null && StringUtils.isNotBlank(result.getETag())) {
                     return urlBuffer.toString();
                 }

@@ -17,5 +17,6 @@
         <property name="endpoint" value="${s3.image.endpoint}"/>
         <property name="secretKey" value="${s3.image.secretKey}"/>
         <property name="cdnDomain" value="${cdn.domain}" />
+        <property name="cdnDomainKey" value="${cdn.domain.key}" />
     </bean>
 </beans>
