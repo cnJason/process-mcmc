@@ -1,19 +1,29 @@
 package com.cyou.fz.mcms.process.core;
 
+import com.amazonaws.services.s3.model.PutObjectResult;
 import com.cyou.fz.mcms.process.core.bean.ArticleProcessDTO;
 import com.cyou.fz.mcms.process.core.bean.ContentProcessDTO;
 import com.cyou.fz.mcms.process.core.bean.M3u8DTO;
 import com.cyou.fz.mcms.process.core.bean.VideoInfoDTO;
 import com.cyou.fz.mcms.process.core.system.Constants;
+import com.cyou.fz.mcms.process.core.utils.RegexUtils;
+import com.cyou.fz.mcms.process.core.utils.S3Util;
 import com.cyou.fz.mcms.process.core.utils.SecurityUtil;
+import com.cyou.fz.mcms.process.web.common.SystemConstants;
+import com.sun.imageio.plugins.common.ImageUtil;
+import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import mjson.Json;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.util.ImageUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -22,6 +32,8 @@ import java.util.regex.Matcher;
  * Created by cnJason on 2016/11/21.
  */
 public class ArticleProcess  implements IProcess{
+
+    public static final String[] IMAGE_TYPE = {"jpg","gif","png","bmp","jpeg"};
 
 
 
@@ -162,6 +174,7 @@ public class ArticleProcess  implements IProcess{
         }
         articleDTO.setContent(newC);
 
+        articleDTO.setStatus(articleDTO.STATUS_SUCCESS);
         return articleDTO;
     }
 
@@ -200,6 +213,7 @@ public class ArticleProcess  implements IProcess{
             try {
                 //判断是否需要传cdn.如果需要传魔图，则直接传，且返回url。如果不需要。则直接返回url
                 String url = proxyPictureByS3(element.attr("src"));
+                //添加图片至picList.
                 picList.add(url);
                 element.attr("src", url);
 
@@ -207,9 +221,7 @@ public class ArticleProcess  implements IProcess{
                 if (element.hasAttr("_src")) {
                     element.removeAttr("_src");
                 }
-
             } catch (Exception e) {
-                //logger.error("处理图片错误", e);
                 element.wrap("<a href=\"" + element.attr("src") + "\"></a>");
             }
         }
@@ -225,29 +237,32 @@ public class ArticleProcess  implements IProcess{
      * @return 这个功能主要是为了判断是否存在魔图上面，如果不存在。则上传魔图，并且返回.
      */
     private String proxyPictureByS3(String url) {
-       /* Map<String, String> map = new HashMap<String, String>();
-        if (element.attr("src") != null && !(element.attr("src").contains("/YWxqaGBf/") && element.attr("src").matches("[^!]+(!a-.*-.*)"))) {
-            map = PrivateUtil.putPictureByS3(element.attr("src"), newsBo.getContentPicList());
-        }
-        String width = "";
-        String height = "";
-        if (map.containsKey("src")) {
-            picList.add(map.get("src"));
-        }
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            if (!StringUtils.equalsIgnoreCase(entry.getKey(), "src")) {
-                if (StringUtils.isBlank(width)) {
-                    width = width.concat(entry.getKey());
-                    height = height.concat(entry.getValue());
-                } else {
-                    width = width.concat(",").concat(entry.getKey());
-                    height = height.concat(",").concat(entry.getValue());
-                }
-            }
-        }*/
-        return null;
-    }
+        if (url != null && url.contains("/YWxqaGBf/")) {
+            return url;
+        } else {
+            // 设置日期格式.
+            SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+            // 获取日期.
+            String date = df.format(new Date());
+            //获取文件格式.
+            String imageType = RegexUtils.getImageType(url);
+            int randomNum = RandomUtils.nextInt(1000, 10000);
 
+            StringBuffer urlBuffer = new StringBuffer();
+            //生成随机数图片名称.
+            urlBuffer.append("http://" + SystemConstants.cdnDomain + "/").append("mobileme/pic/cms").append("/").append(date).append("/").append(randomNum).append(".").append(imageType);
+            S3Util s3Util = S3Util.getInstance(SystemConstants.endpoint, SystemConstants.accessKey, SystemConstants.secretKey);
+            try {
+                PutObjectResult result = s3Util.putRemoteImage(url, SystemConstants.cdnDomainKey + "mobileme/pic/cms/" + date + "/" + randomNum + "."+ imageType);
+                if (result != null && StringUtils.isNotBlank(result.getETag())) {
+                    return urlBuffer.toString();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return url;
+        }
+    }
 
     /**
      * 去除敏感词.
@@ -265,7 +280,7 @@ public class ArticleProcess  implements IProcess{
         } catch (Exception e) {
             logger.error("filter news content error newsId : " + newsBo.getNewsKey() + e.getMessage(), e);
         }*/
-        return null;
+        return content;
     }
 
     /**
@@ -290,15 +305,7 @@ public class ArticleProcess  implements IProcess{
                 .replaceAll("《<[aA][^>]+href=['\"]?[^'\"]+['\"]?[^>]*>(.+?)</[aA]>》", "《$1》")
                 .replaceAll("<[aA][^>]+href=['\"]?[^'\"]+['\"]?[^>]*>(《.+?》)</[aA]>", "$1")
                 .replaceAll("([\\【\\[\\（\\(\\“\"])[ ]*?<[aA][^>]+href=['\"]?[^'\"]+['\"]?[^>]*>(.+?)</[aA]>[ ]*?([\\】\\]\\）\\)\"\\”])", "");
-      /*
-       * if(newsBo.getNewsChannelId() == 90103) { content = content.replaceAll(
-       * "<[aA][^>]+href=['\"]?[^'\"]+['\"]?[^>]*>(<[iI][mM][gG][^>]+>)</[aA]>",
-       * "$1") .replaceAll(
-       * "<[aA][^>]+href=['\"]?[^'\"]+['\"]?[^>]*>.+?</[aA]>|<[aA][^>]*>|</[aA]>"
-       * , ""); } else { content =
-       * content.replaceAll("<[aA][^>]+>https?://[^>]+</[aA]>|<[aA][^>]*>|</[aA]>"
-       * , ""); }
-       */
+
         java.util.regex.Pattern pf = java.util.regex.Pattern.compile("<[pP][^>]*>.*?</[pP]>");
         Matcher mf = pf.matcher(content);
         StringBuffer sf = new StringBuffer();

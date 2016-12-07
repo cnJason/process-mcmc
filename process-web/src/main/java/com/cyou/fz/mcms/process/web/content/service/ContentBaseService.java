@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by 内容处理对象 on 2016/12/2.
@@ -64,6 +65,9 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
      */
     @Autowired
     private ContentService contentService;
+
+
+    private Logger logger = Logger.getLogger("contentBaseService");
 
 
     /**
@@ -276,6 +280,7 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
         // 设置主对象为清洗成功.且附加时间
         markContentStatus(contentKey, ContentBase.STATUS_SUCCESS);
         // 转移对象至成功持久队列.
+        logger.info("内容清洗完毕:"+contentTxt.getContentKey());
         contentQueueService.moveRunningTaskToSuccessQueue(contentRequest);
     }
 

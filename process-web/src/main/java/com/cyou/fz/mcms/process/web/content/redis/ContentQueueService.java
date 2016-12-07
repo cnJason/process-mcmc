@@ -315,13 +315,18 @@ public class ContentQueueService implements IQueueService {
         List<ContentRequest> contentList = Lists.newArrayList();
 
         for (String contentDetailInfo : contentDetailList) {
-            Json contentDetailInfoJson = Json.make(contentDetailInfo);
+            Json contentDetailInfoJson = Json.read(contentDetailInfo);
             ContentRequest contentRequest = new ContentRequest();
-            contentRequest.setContentKey(contentDetailInfoJson.at("contentKey").asString());
-            contentRequest.setChannelCode(contentDetailInfoJson.at("channelCode").asString());
+
             contentRequest.setSourceSystem(contentDetailInfoJson.at("sourceSystem").asString());
-            contentRequest.setVlogId(contentDetailInfoJson.at("vlogId").asInteger());
-            contentRequest.setOriginalText(contentDetailInfoJson.at("originText").asString());
+            if(contentRequest.getSourceSystem().contentEquals(ContentRequest.SOURCE_SYSTEM_CMS)){
+                contentRequest.setOriginalText(contentDetailInfoJson.at("originalText").asString());
+                contentRequest.setContentKey(contentDetailInfoJson.at("contentKey").asString());
+                contentRequest.setChannelCode(contentDetailInfoJson.at("channelCode").asString());
+            }
+            if(contentRequest.getSourceSystem().contentEquals( ContentRequest.SOURCE_SYSTEM_VLOG)){
+                contentRequest.setVlogId(contentDetailInfoJson.at("vlogId").asInteger());
+            }
             contentList.add(contentRequest);
         }
         return contentList;

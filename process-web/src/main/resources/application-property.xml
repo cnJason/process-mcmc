@@ -11,4 +11,11 @@
             </list>
         </property>
     </bean>
+
+    <bean id="systemConstant" class="com.cyou.fz.mcms.process.web.common.SystemConstants" lazy-init="false">
+        <property name="accessKey" value="${s3.image.accessKey}"/>
+        <property name="endpoint" value="${s3.image.endpoint}"/>
+        <property name="secretKey" value="${s3.image.secretKey}"/>
+        <property name="cdnDomain" value="${cdn.domain}" />
+    </bean>
 </beans>
