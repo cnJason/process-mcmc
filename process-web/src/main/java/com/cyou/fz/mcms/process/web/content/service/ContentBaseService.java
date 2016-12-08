@@ -118,10 +118,15 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
         int totalCount = (int) result.getTotalCount();
 
         int range = (totalCount / SystemConstants.DEFAULT_PAGE_SIZE) + 1;
+        if(range > 6){
+            //目前最多支持一个频道1200条数据.
+            range = 6;
+        }
 
         for (int i = 2; i <= range; i++) {
             contentQueryParam.setPageNo(i);
             CmsQueryResult<ContentDTO> pagedResult = contentService.queryContent(contentQueryParam);
+
             //分页发送到清洗队列中进行清洗.
             sendListToProcess(pagedResult);
         }
@@ -182,6 +187,8 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
                 contentCms.setKeywords(contentDTO.getKeywords());
                 // 标签
                 contentCms.setTags(contentDTO.getTags());
+                // 标题
+                contentCms.setTitle(contentDTO.getTitle());
                 // 发布时间
                 contentCms.setPublishTime(new Date(contentDTO.getPublishTime()));
                 // 副标题
@@ -198,9 +205,10 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
             ContentRequest contentRequest = makeContentRequest(contentDTO);
             if(contentBase.getStatus().intValue() != ContentBase.STATUS_SUCCESS){
                 requestList.add(contentRequest);
+
             }
         }
-
+        logger.info("当前已经发送清洗对象数量为："+requestList.size());
         contentQueueService.pushTaskToWaitingQueue(requestList, true);
     }
 
@@ -323,10 +331,12 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
         }
         McmsContentDTO contentDTO = new McmsContentDTO();
         contentDTO.setContentKey(contentBase.getContentKey());
+
         BeanUtils.copyProperties(contentBase,contentDTO);
         ContentCms contentCms = contentCmsService.getByContentKey(contentKey);
         if(contentBase != null){
             BeanUtils.copyProperties(contentCms,contentDTO);
+            contentDTO.setTitle(contentCms.getTitle());
         }
         ContentTxt contentTxt = contentTxtService.getByContentKey(contentKey);
 
@@ -338,7 +348,11 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
                 pList.add((String) o);
             }
             contentDTO.setPicList(pList);
-            contentDTO.setContentText(contentDTO.getContentKey());
+            contentDTO.setvPicList(Lists.newArrayList());
+            if(contentTxt.getvPicList()!= null){
+
+            }
+            contentDTO.setContentText(contentTxt.getProcessText());
         }
         return contentDTO;
     }

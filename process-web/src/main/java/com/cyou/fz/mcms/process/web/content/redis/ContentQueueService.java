@@ -181,6 +181,8 @@ public class ContentQueueService implements IQueueService {
 
     }
 
+
+
     @Override
     public ContentQueueResult queryWaitingQueues(ContentQueryParam queryParam) {
 
@@ -398,5 +400,10 @@ public class ContentQueueService implements IQueueService {
     public void removeFromWaitingQueue(ContentRequest contentRequest) {
         redisTemplate.opsForZSet().remove(getWaitingQueueIdentification(),contentRequest.getContentKey());
 
+    }
+
+    public void deleteBreakedQueue(long timeout) {
+        Long endTime = System.currentTimeMillis() - timeout;
+        redisTemplate.opsForZSet().removeRangeByScore(getRunningQueueIdentification(),0,endTime);
     }
 }

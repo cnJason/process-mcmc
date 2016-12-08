@@ -244,7 +244,10 @@ public class ArticleProcess  implements IProcess{
      * @return 这个功能主要是为了判断是否存在魔图上面，如果不存在。则上传魔图，并且返回.
      */
     private String proxyPictureByS3(String url) {
-        if (url != null && url.contains("/YWxqaGBf/")) {
+
+         url = convertFromOldSystem(url);
+
+        if (url.contains("/YWxqaGBf/") || url.contains("/z6mhfw/") || url.contains("/i8nvgq/")) {
             return url;
         } else {
 
@@ -268,6 +271,47 @@ public class ArticleProcess  implements IProcess{
             cdnPathBuffer.append(cdnDomainKeyStr).append("/mobileme/pic/cms/").append(date).append("/").append(randomNum).append(".").append(imageType);
             return imageMappingService.uploadImage(url,urlBuffer.toString(),cdnPathBuffer.toString());
         }
+    }
+
+    private String convertFromOldSystem(String url) {
+        // 17173
+        url = url.replace("images.17173.com","i1.17173cdn.com/z6mhfw");
+        url = url.replace("i1.17173.itc.cn","i1.17173cdn.com/z6mhfw");
+        url = url.replace("i2.17173.itc.cn","i1.17173cdn.com/z6mhfw");
+        url = url.replace("i3.17173.itc.cn","i1.17173cdn.com/z6mhfw");
+        url = url.replace("i4.17173.itc.cn","i1.17173cdn.com/z6mhfw");
+        url = url.replace("i5.17173.itc.cn","i1.17173cdn.com/z6mhfw");
+        url = url.replace("i6.17173.itc.cn","i1.17173cdn.com/z6mhfw");
+        url = url.replace("i7.17173.itc.cn","i1.17173cdn.com/z6mhfw");
+        url = url.replace("i8.17173.itc.cn","i1.17173cdn.com/z6mhfw");
+        url = url.replace("i9.17173.itc.cn","i1.17173cdn.com/z6mhfw");
+        url = url.replace("images.17173cdn.com","i1.17173cdn.com/z6mhfw");
+        // yeyou
+        url = url.replace("images.yeyou.com","i1.yeyoucdn.com/oqmxe9");
+        url = url.replace("i1.yeyou.itc.cn","i1.yeyoucdn.com/oqmxe9");
+        url = url.replace("i2.yeyou.itc.cn","i1.yeyoucdn.com/oqmxe9");
+        url = url.replace("i3.yeyou.itc.cn","i1.yeyoucdn.com/oqmxe9");
+        url = url.replace("i4.yeyou.itc.cn","i1.yeyoucdn.com/oqmxe9");
+        url = url.replace("i5.yeyou.itc.cn","i1.yeyoucdn.com/oqmxe9");
+        url = url.replace("i6.yeyou.itc.cn","i1.yeyoucdn.com/oqmxe9");
+        url = url.replace("i7.yeyou.itc.cn","i1.yeyoucdn.com/oqmxe9");
+        url = url.replace("i8.yeyou.itc.cn","i1.yeyoucdn.com/oqmxe9");
+        url = url.replace("i9.yeyou.itc.cn","i1.yeyoucdn.com/oqmxe9");
+        url = url.replace("images.yeyoucdn.com","i1.yeyoucdn.com/oqmxe9");
+        // shouyou
+        url = url.replace("images.shouyou.com","i1.shouyoucdn.com/i8nvgq");
+        url = url.replace("i1.shouyou.itc.cn","i1.shouyoucdn.com/i8nvgq");
+        url = url.replace("i2.shouyou.itc.cn","i1.shouyoucdn.com/i8nvgq");
+        url = url.replace("i3.shouyou.itc.cn","i1.shouyoucdn.com/i8nvgq");
+        url = url.replace("i4.shouyou.itc.cn","i1.shouyoucdn.com/i8nvgq");
+        url = url.replace("i5.shouyou.itc.cn","i1.shouyoucdn.com/i8nvgq");
+        url = url.replace("i6.shouyou.itc.cn","i1.shouyoucdn.com/i8nvgq");
+        url = url.replace("i7.shouyou.itc.cn","i1.shouyoucdn.com/i8nvgq");
+        url = url.replace("i8.shouyou.itc.cn","i1.shouyoucdn.com/i8nvgq");
+        url = url.replace("i9.shouyou.itc.cn","i1.shouyoucdn.com/i8nvgq");
+        url = url.replace("images.shouyoucdn.com","i1.shouyoucdn.com/i8nvgq");
+
+        return url;
     }
 
     /**

@@ -21,6 +21,10 @@ public class ImageMappingService  extends BaseServiceImpl<ImageMapping> {
     private static final ExecutorService executor = Executors.newFixedThreadPool(10);
 
 
+    public void refreshDisabledImage(){
+
+    }
+
     /**
      * 上传图片
      * @param originImage
