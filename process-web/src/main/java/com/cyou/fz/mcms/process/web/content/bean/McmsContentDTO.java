@@ -2,6 +2,7 @@ package com.cyou.fz.mcms.process.web.content.bean;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by cnJason on 2016/12/8.
@@ -55,9 +56,9 @@ public class McmsContentDTO implements Serializable {
 
     private String contentText;
 
-    private String picList;
+    private List<String> picList;
 
-    private String vPicList;
+    private List<String> vPicList;
 
 
     public String getContentKey() {
@@ -204,19 +205,19 @@ public class McmsContentDTO implements Serializable {
         this.contentText = contentText;
     }
 
-    public String getPicList() {
+    public List<String> getPicList() {
         return picList;
     }
 
-    public void setPicList(String picList) {
+    public void setPicList(List<String> picList) {
         this.picList = picList;
     }
 
-    public String getvPicList() {
+    public List<String> getvPicList() {
         return vPicList;
     }
 
-    public void setvPicList(String vPicList) {
+    public void setvPicList(List<String> vPicList) {
         this.vPicList = vPicList;
     }
 }

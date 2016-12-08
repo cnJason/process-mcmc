@@ -103,6 +103,7 @@ public class S3Util {
         }catch (Exception e){
             throw e;
         }finally {
+
             if(connection != null){
                 connection.disconnect();
             }

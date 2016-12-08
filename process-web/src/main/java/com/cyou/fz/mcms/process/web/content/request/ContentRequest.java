@@ -44,6 +44,8 @@ public class ContentRequest implements Serializable {
 
     private String originalText;
 
+
+
     public String getOriginalText() {
         return originalText;
     }

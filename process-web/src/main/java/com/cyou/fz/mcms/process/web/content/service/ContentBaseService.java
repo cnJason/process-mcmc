@@ -329,10 +329,20 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
             BeanUtils.copyProperties(contentCms,contentDTO);
         }
         ContentTxt contentTxt = contentTxtService.getByContentKey(contentKey);
+
         if(contentTxt != null){
-            BeanUtils.copyProperties(contentTxt,contentDTO);
+            Json json = Json.read(contentTxt.getPicList());
+            List<Object> picList = json.asList();
+            List<String> pList = Lists.newArrayList();
+            for (Object o : picList) {
+                pList.add((String) o);
+            }
+            contentDTO.setPicList(pList);
             contentDTO.setContentText(contentDTO.getContentKey());
         }
         return contentDTO;
     }
+
+
+
 }

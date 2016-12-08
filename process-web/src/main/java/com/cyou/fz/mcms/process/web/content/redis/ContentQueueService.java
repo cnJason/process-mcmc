@@ -394,4 +394,9 @@ public class ContentQueueService implements IQueueService {
     public long getRunningQueneNum() {
         return redisTemplate.opsForZSet().size(getRunningQueueIdentification());
     }
+
+    public void removeFromWaitingQueue(ContentRequest contentRequest) {
+        redisTemplate.opsForZSet().remove(getWaitingQueueIdentification(),contentRequest.getContentKey());
+
+    }
 }

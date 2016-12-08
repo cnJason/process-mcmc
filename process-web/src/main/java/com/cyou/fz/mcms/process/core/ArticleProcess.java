@@ -10,6 +10,8 @@ import com.cyou.fz.mcms.process.core.utils.RegexUtils;
 import com.cyou.fz.mcms.process.core.utils.S3Util;
 import com.cyou.fz.mcms.process.core.utils.SecurityUtil;
 import com.cyou.fz.mcms.process.web.common.SystemConstants;
+import com.cyou.fz.mcms.process.web.image.service.ImageMappingService;
+import com.cyou.fz.mcms.process.web.spring.SpringContextLoader;
 import com.sun.imageio.plugins.common.ImageUtil;
 import jdk.nashorn.internal.runtime.regexp.joni.Regex;
 import mjson.Json;
@@ -32,6 +34,9 @@ import java.util.regex.Matcher;
  * Created by cnJason on 2016/11/21.
  */
 public class ArticleProcess  implements IProcess{
+
+
+    private ImageMappingService imageMappingService = (ImageMappingService) SpringContextLoader.getBean("imageMappingService");
 
 
     /**
@@ -242,6 +247,7 @@ public class ArticleProcess  implements IProcess{
         if (url != null && url.contains("/YWxqaGBf/")) {
             return url;
         } else {
+
             // 设置日期格式.
             SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd");
             // 获取日期.
@@ -253,20 +259,17 @@ public class ArticleProcess  implements IProcess{
             StringBuffer urlBuffer = new StringBuffer();
             //生成随机数图片名称.
             urlBuffer.append("http://" + SystemConstants.cdnDomain + "/").append("mobileme/pic/cms").append("/").append(date).append("/").append(randomNum).append(".").append(imageType);
-            S3Util s3Util = S3Util.getInstance(SystemConstants.endpoint, SystemConstants.accessKey, SystemConstants.secretKey);
-            try {
-                String cdnDomainKeyStr = "";
-                if(SystemConstants.cdnDomainKey !=null){
-                    cdnDomainKeyStr = SystemConstants.cdnDomainKey;
-                }
-                PutObjectResult result = s3Util.putRemoteImage(url, cdnDomainKeyStr + "mobileme/pic/cms/" + date + "/" + randomNum + "."+ imageType);
-                if (result != null && StringUtils.isNotBlank(result.getETag())) {
-                    return urlBuffer.toString();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+
+            StringBuffer cdnPathBuffer = new StringBuffer();
+            String cdnDomainKeyStr = "";
+            if(SystemConstants.cdnDomainKey !=null){
+                cdnDomainKeyStr = SystemConstants.cdnDomainKey;
             }
-            return url;
+            cdnPathBuffer.append(cdnDomainKeyStr).append("/mobileme/pic/cms/").append(date).append("/").append(randomNum).append(".").append(imageType);
+
+            imageMappingService.uploadImage(url,urlBuffer.toString(),cdnPathBuffer.toString());
+
+            return urlBuffer.toString();
         }
     }
 

@@ -62,6 +62,7 @@ public class TaskStatusJob extends BaseJob {
             if(contentRequest !=null && contentRequest.getContentKey() !=null){
                 ContentBase contentBase = contentBaseService.getByContentKey(contentRequest.getContentKey());
                 if(contentBase.getStatus().intValue() == ContentBase.STATUS_SUCCESS){
+                    contentQueueService.removeFromWaitingQueue(contentRequest);
                     continue;
                 }else {
                     retList.add(contentRequest);
