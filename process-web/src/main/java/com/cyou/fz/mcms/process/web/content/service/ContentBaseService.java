@@ -4,10 +4,7 @@ import com.cyou.fz.common.utils.mybatis.bean.Query;
 import com.cyou.fz.common.utils.mybatis.service.BaseServiceImpl;
 import com.cyou.fz.mcms.process.core.bean.ArticleProcessDTO;
 import com.cyou.fz.mcms.process.web.common.SystemConstants;
-import com.cyou.fz.mcms.process.web.content.bean.ContentBase;
-import com.cyou.fz.mcms.process.web.content.bean.ContentCms;
-import com.cyou.fz.mcms.process.web.content.bean.ContentTask;
-import com.cyou.fz.mcms.process.web.content.bean.ContentTxt;
+import com.cyou.fz.mcms.process.web.content.bean.*;
 import com.cyou.fz.mcms.process.web.content.job.ContentTaskJobUtils;
 import com.cyou.fz.mcms.process.web.content.query.ContentTaskParams;
 import com.cyou.fz.mcms.process.web.content.redis.ContentQueueService;
@@ -19,6 +16,7 @@ import com.cyou.fz.services.cms.model.ContentQueryParam;
 import com.google.common.collect.Lists;
 import mjson.Json;
 import org.quartz.SchedulerException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -318,4 +316,23 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
     }
 
 
+    public McmsContentDTO getMcmsContentDTOByContentKey(String contentKey) {
+        ContentBase contentBase = getByContentKey(contentKey);
+        if(contentBase ==null || contentBase.getStatus().intValue() != ContentBase.STATUS_SUCCESS){
+            return null;
+        }
+        McmsContentDTO contentDTO = new McmsContentDTO();
+        contentDTO.setContentKey(contentBase.getContentKey());
+        BeanUtils.copyProperties(contentBase,contentDTO);
+        ContentCms contentCms = contentCmsService.getByContentKey(contentKey);
+        if(contentBase != null){
+            BeanUtils.copyProperties(contentCms,contentDTO);
+        }
+        ContentTxt contentTxt = contentTxtService.getByContentKey(contentKey);
+        if(contentTxt != null){
+            BeanUtils.copyProperties(contentTxt,contentDTO);
+            contentDTO.setContentText(contentDTO.getContentKey());
+        }
+        return contentDTO;
+    }
 }

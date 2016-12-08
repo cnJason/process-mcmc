@@ -2,6 +2,7 @@ package com.cyou.fz.mcms.process.web.content.controller;
 
 import com.cyou.fz.mcms.process.web.common.JsonResult;
 import com.cyou.fz.mcms.process.web.common.ResultCode;
+import com.cyou.fz.mcms.process.web.content.bean.McmsContentDTO;
 import com.cyou.fz.mcms.process.web.content.query.ContentTaskParams;
 import com.cyou.fz.mcms.process.web.content.service.ContentBaseService;
 import io.swagger.annotations.Api;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
@@ -64,6 +66,18 @@ public class ContentController {
             return new JsonResult(ResultCode.EXCEPTION, "任务删除失败", result);
         }
         return new JsonResult(ResultCode.SUCCESS, "任务删除成功", result);
+    }
+
+
+    @ResponseBody
+    @RequestMapping(value = "/getContent")
+    @ApiOperation(value = "获取内容信息",httpMethod = "GET",position = 3)
+    public JsonResult getContent(@ApiParam(value = "内容key",required = true)@RequestParam String contentKey){
+        McmsContentDTO contentDTO = contentBaseService.getMcmsContentDTOByContentKey(contentKey);
+        if(contentDTO == null){
+            return new JsonResult(ResultCode.EXCEPTION,"获取内容失败",contentDTO);
+        }
+        return new JsonResult(ResultCode.SUCCESS,"获取内容成功",contentDTO);
     }
 
 
