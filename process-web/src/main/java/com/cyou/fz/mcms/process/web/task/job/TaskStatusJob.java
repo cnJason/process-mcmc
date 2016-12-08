@@ -51,7 +51,14 @@ public class TaskStatusJob extends BaseJob {
         contentQueueService.moveWaitingTaskToRunningQueue(requests);
         contentProcessService.processRequestList(requests);
         logger.info("本次任务分配结束:"+ requests.size());
-        contentQueueService.deleteBreakedQueue(timeout);
+        List<String> failList = contentQueueService.deleteBreakedQueue(timeout);
+        for (String failContentKey : failList) {
+            ContentBase contentBase = contentBaseService.getByContentKey(failContentKey);
+            if(contentBase != null){
+                contentBase.setStatus(ContentBase.STATUS_FAILURE);
+                contentBaseService.update(contentBase);
+            }
+        }
 
     }
 

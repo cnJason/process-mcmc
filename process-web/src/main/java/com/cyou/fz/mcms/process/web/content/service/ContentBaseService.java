@@ -203,9 +203,8 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
                 }
             }
             ContentRequest contentRequest = makeContentRequest(contentDTO);
-            if(contentBase.getStatus().intValue() != ContentBase.STATUS_SUCCESS){
+            if(contentBase.getStatus().intValue() != ContentBase.STATUS_SUCCESS || contentBase.getStatus().intValue() != ContentBase.STATUS_FAILURE){
                 requestList.add(contentRequest);
-
             }
         }
         logger.info("当前已经发送清洗对象数量为："+requestList.size());
