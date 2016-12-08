@@ -114,6 +114,7 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
         contentQueryParam.setPageSize(SystemConstants.DEFAULT_PAGE_SIZE);
 
         CmsQueryResult<ContentDTO> result = contentService.queryContent(contentQueryParam);
+
         //发送到清洗队列中进行清洗.
         sendListToProcess(result);
         int totalCount = (int) result.getTotalCount();
@@ -197,10 +198,11 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
             ContentRequest contentRequest = makeContentRequest(contentDTO);
             requestList.add(contentRequest);
         }
+
         contentQueueService.pushTaskToWaitingQueue(requestList, true);
     }
 
-    private ContentBase getByContentKey(String contentKey) {
+    public ContentBase getByContentKey(String contentKey) {
         Query<ContentBase> query = Query.build(ContentBase.class);
         query.addEq(ContentBase.COLUMN_CONTENT_KEY, contentKey);
         return get(query);

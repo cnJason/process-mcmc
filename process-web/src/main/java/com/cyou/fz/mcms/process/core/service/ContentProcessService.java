@@ -25,11 +25,7 @@ public class ContentProcessService {
     private static final ExecutorService executor = Executors.newFixedThreadPool(10);
 
 
-    /**
-     * 内容文本服务
-     */
-    @Autowired
-    private ContentTxtService contentTxtService;
+
 
     /**
      * 内容基础服务
@@ -60,15 +56,25 @@ public class ContentProcessService {
     }
 
     private void proceessContent(ContentRequest contentRequest) {
+        if(contentRequest.getContentKey() ==null){
+            return;
+        }
+        ContentBase contentBase = contentBaseService.getByContentKey(contentRequest.getContentKey());
+
+        if(contentBase != null && contentBase.getStatus().intValue() == ContentBase.STATUS_SUCCESS){
+            return;
+        }
+
         // 获取内容文本对象.
-        ContentTxt contentTxt = contentTxtService.getByContentKey(contentRequest.getContentKey());
         ArticleProcessDTO articleProcessDTO = new ArticleProcessDTO();
         // 内容key.
         articleProcessDTO.setContentKey(contentRequest.getContentKey());
         // 内容文本
-        articleProcessDTO.setContent(contentTxt.getOriginalText());
+        articleProcessDTO.setContent(contentRequest.getOriginalText());
         // 频道编号
         articleProcessDTO.setChannelCode(contentRequest.getChannelCode());
+
+
 
         ArticleProcess articleProcess = new ArticleProcess();
         // 获取处理的返回值.
