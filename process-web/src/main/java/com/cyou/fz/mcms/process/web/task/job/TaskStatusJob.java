@@ -2,9 +2,12 @@ package com.cyou.fz.mcms.process.web.task.job;
 
 import com.cyou.fz.mcms.process.core.service.ContentProcessService;
 import com.cyou.fz.mcms.process.web.common.scheduler.BaseJob;
+import com.cyou.fz.mcms.process.web.content.bean.ContentBase;
 import com.cyou.fz.mcms.process.web.content.redis.ContentQueueService;
 import com.cyou.fz.mcms.process.web.content.request.ContentRequest;
+import com.cyou.fz.mcms.process.web.content.service.ContentBaseService;
 import com.cyou.fz.mcms.process.web.spring.SpringContextLoader;
+import com.google.common.collect.Lists;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -28,6 +31,7 @@ public class TaskStatusJob extends BaseJob {
 
     private ContentProcessService contentProcessService = (ContentProcessService) SpringContextLoader.getBean("contentProcessService");
 
+    private ContentBaseService contentBaseService = (ContentBaseService)SpringContextLoader.getBean("contentBaseService");
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -43,11 +47,27 @@ public class TaskStatusJob extends BaseJob {
         if (requestList.size() == 0) {
             return;
         }
-        contentQueueService.moveWaitingTaskToRunningQueue(requestList);
-        contentProcessService.processRequestList(requestList);
-        logger.info("本次任务分配结束:"+ canAssignCount);
+        List<ContentRequest> requests = filterContentRequestList(requestList);
+        contentQueueService.moveWaitingTaskToRunningQueue(requests);
+        contentProcessService.processRequestList(requests);
+        logger.info("本次任务分配结束:"+ requests.size());
 
         contentQueueService.refreshBreakedQueue(timeout);
         logger.info("刷新任务完成");
+    }
+
+    private List<ContentRequest> filterContentRequestList(List<ContentRequest> requestList) {
+        List<ContentRequest> retList = Lists.newArrayList();
+        for (ContentRequest contentRequest : requestList) {
+            if(contentRequest !=null && contentRequest.getContentKey() !=null){
+                ContentBase contentBase = contentBaseService.getByContentKey(contentRequest.getContentKey());
+                if(contentBase.getStatus().intValue() == ContentBase.STATUS_SUCCESS){
+                    continue;
+                }else {
+                    retList.add(contentRequest);
+                }
+            }
+        }
+        return retList;
     }
 }

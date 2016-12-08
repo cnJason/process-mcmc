@@ -137,10 +137,12 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
         List<ContentRequest> requestList = Lists.newArrayList();
         for (ContentDTO contentDTO : contentDTOList) {
             String contentKey = contentDTO.getContentKey();
+
             if(contentKey ==null){
                 continue;
             }
             ContentBase contentBase = getByContentKey(contentKey);
+
             if (contentBase == null) {
                 contentBase = new ContentBase();
                 // 设置内容key
@@ -196,7 +198,9 @@ public class ContentBaseService extends BaseServiceImpl<ContentBase> {
                 }
             }
             ContentRequest contentRequest = makeContentRequest(contentDTO);
-            requestList.add(contentRequest);
+            if(contentBase.getStatus().intValue() != ContentBase.STATUS_SUCCESS){
+                requestList.add(contentRequest);
+            }
         }
 
         contentQueueService.pushTaskToWaitingQueue(requestList, true);
