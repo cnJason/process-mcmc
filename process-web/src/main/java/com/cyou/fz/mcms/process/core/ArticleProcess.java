@@ -266,10 +266,7 @@ public class ArticleProcess  implements IProcess{
                 cdnDomainKeyStr = SystemConstants.cdnDomainKey;
             }
             cdnPathBuffer.append(cdnDomainKeyStr).append("/mobileme/pic/cms/").append(date).append("/").append(randomNum).append(".").append(imageType);
-
-            imageMappingService.uploadImage(url,urlBuffer.toString(),cdnPathBuffer.toString());
-
-            return urlBuffer.toString();
+            return imageMappingService.uploadImage(url,urlBuffer.toString(),cdnPathBuffer.toString());
         }
     }
 
