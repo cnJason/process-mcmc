@@ -404,15 +404,12 @@ public class ContentQueueService implements IQueueService {
 
     public List<String> deleteBreakedQueue(long timeout) {
         List<String> requestList = Lists.newArrayList();
-        Long endTime = System.currentTimeMillis() - timeout;
-        Set<DefaultTypedTuple>  tupleList = redisTemplate.opsForZSet().rangeByScore(getRunningQueueIdentification(),0,endTime);
-        for (DefaultTypedTuple tuple : tupleList) {
-            String contentKey = String.valueOf(tuple.getValue());
 
-            if (contentKey == null) {
-                continue;
-            }
-            requestList.add(contentKey);
+        Long endTime = System.currentTimeMillis() - timeout;
+
+        Set<String>  tupleList = (Set<String>)redisTemplate.opsForZSet().rangeByScore(getRunningQueueIdentification(),0,endTime);
+        for (String tuple : tupleList) {
+            requestList.add(tuple);
         }
         redisTemplate.opsForZSet().removeRangeByScore(getRunningQueueIdentification(),0,endTime);
         return requestList;
