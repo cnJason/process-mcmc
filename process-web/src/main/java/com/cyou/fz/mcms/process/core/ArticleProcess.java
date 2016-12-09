@@ -112,7 +112,6 @@ public class ArticleProcess implements IProcess {
                 .append("|<[iI][fF][rR][aA][mM][eE] [^>]*?src=['\"]?http://v.17173.com/player_ifrm/([a-zA-Z0-9=]+)\\.html[^>]*>(.*</[iI][fF][rR][aA][mM][eE]>)?");
         checkM3u8str
                 .append("|<[eE][mM][bB][eE][dD] [^>]*?src=['\"]?http://v.17173.com/live/playerVideo/PreloaderFileCustomer.swf.*?url=['\"]?http://v.17173.com.*?/([a-zA-Z0-9=]+)\\.html[^>]*>(.*</[eE][mM][bB][eE][dD]>)?");
-        checkM3u8str.append("|<[eE][mM][bB][eE][dD][^>]*>(.*</[eE][mM][bB][eE][dD]>)?");
         java.util.regex.Pattern pm3u8 = java.util.regex.Pattern.compile(checkM3u8str.toString());
         String videoId = "";
         Matcher mm3u8 = pm3u8.matcher(element.toString());
