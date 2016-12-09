@@ -178,6 +178,52 @@ public class S3Util {
     }
 
 
+    /**
+     * 地址做一个转换。
+     * @param url 原始地址.
+     * @return 旧系统转换.
+     */
+    public static  String convertFromOldSystem(String url) {
+        // 17173
+        url = url.replace("images.17173.com","i1.17173cdn.com/z6mhfw");
+        url = url.replace("i1.17173.itc.cn","i1.17173cdn.com/z6mhfw");
+        url = url.replace("i2.17173.itc.cn","i1.17173cdn.com/z6mhfw");
+        url = url.replace("i3.17173.itc.cn","i1.17173cdn.com/z6mhfw");
+        url = url.replace("i4.17173.itc.cn","i1.17173cdn.com/z6mhfw");
+        url = url.replace("i5.17173.itc.cn","i1.17173cdn.com/z6mhfw");
+        url = url.replace("i6.17173.itc.cn","i1.17173cdn.com/z6mhfw");
+        url = url.replace("i7.17173.itc.cn","i1.17173cdn.com/z6mhfw");
+        url = url.replace("i8.17173.itc.cn","i1.17173cdn.com/z6mhfw");
+        url = url.replace("i9.17173.itc.cn","i1.17173cdn.com/z6mhfw");
+        url = url.replace("images.17173cdn.com","i1.17173cdn.com/z6mhfw");
+        // yeyou
+        url = url.replace("images.yeyou.com","i1.yeyoucdn.com/oqmxe9");
+        url = url.replace("i1.yeyou.itc.cn","i1.yeyoucdn.com/oqmxe9");
+        url = url.replace("i2.yeyou.itc.cn","i1.yeyoucdn.com/oqmxe9");
+        url = url.replace("i3.yeyou.itc.cn","i1.yeyoucdn.com/oqmxe9");
+        url = url.replace("i4.yeyou.itc.cn","i1.yeyoucdn.com/oqmxe9");
+        url = url.replace("i5.yeyou.itc.cn","i1.yeyoucdn.com/oqmxe9");
+        url = url.replace("i6.yeyou.itc.cn","i1.yeyoucdn.com/oqmxe9");
+        url = url.replace("i7.yeyou.itc.cn","i1.yeyoucdn.com/oqmxe9");
+        url = url.replace("i8.yeyou.itc.cn","i1.yeyoucdn.com/oqmxe9");
+        url = url.replace("i9.yeyou.itc.cn","i1.yeyoucdn.com/oqmxe9");
+        url = url.replace("images.yeyoucdn.com","i1.yeyoucdn.com/oqmxe9");
+        // shouyou
+        url = url.replace("images.shouyou.com","i1.shouyoucdn.com/i8nvgq");
+        url = url.replace("i1.shouyou.itc.cn","i1.shouyoucdn.com/i8nvgq");
+        url = url.replace("i2.shouyou.itc.cn","i1.shouyoucdn.com/i8nvgq");
+        url = url.replace("i3.shouyou.itc.cn","i1.shouyoucdn.com/i8nvgq");
+        url = url.replace("i4.shouyou.itc.cn","i1.shouyoucdn.com/i8nvgq");
+        url = url.replace("i5.shouyou.itc.cn","i1.shouyoucdn.com/i8nvgq");
+        url = url.replace("i6.shouyou.itc.cn","i1.shouyoucdn.com/i8nvgq");
+        url = url.replace("i7.shouyou.itc.cn","i1.shouyoucdn.com/i8nvgq");
+        url = url.replace("i8.shouyou.itc.cn","i1.shouyoucdn.com/i8nvgq");
+        url = url.replace("i9.shouyou.itc.cn","i1.shouyoucdn.com/i8nvgq");
+        url = url.replace("images.shouyoucdn.com","i1.shouyoucdn.com/i8nvgq");
+
+        return url;
+    }
+
     public static void main(String[] args) throws Exception {
 
         S3Util s3Util = getInstance("http://ds.internal.17173cdn.com","07qu2c","9QrMEf1DevBwSzpXOa");

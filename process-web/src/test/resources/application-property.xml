@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-lazy-init="true">
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath*:servers_cfg.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="systemConstant" class="com.cyou.fz.mcms.process.web.common.SystemConstants" lazy-init="false">
+        <property name="accessKey" value="${s3.image.accessKey}"/>
+        <property name="endpoint" value="${s3.image.endpoint}"/>
+        <property name="secretKey" value="${s3.image.secretKey}"/>
+        <property name="cdnDomain" value="${cdn.domain}" />
+        <property name="cdnDomainKey" value="${cdn.domain.key}" />
+    </bean>
+</beans>

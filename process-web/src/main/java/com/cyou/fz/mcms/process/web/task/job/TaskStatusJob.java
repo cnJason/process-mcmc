@@ -1,5 +1,6 @@
 package com.cyou.fz.mcms.process.web.task.job;
 
+import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.cyou.fz.mcms.process.core.service.ContentProcessService;
 import com.cyou.fz.mcms.process.web.common.scheduler.BaseJob;
 import com.cyou.fz.mcms.process.web.content.bean.ContentBase;
@@ -24,7 +25,7 @@ public class TaskStatusJob extends BaseJob {
     private Logger logger = Logger.getLogger("taskStatusJob");
     private Integer batchSize = 1000;
 
-    private long timeout = 5*1000*60;
+    private long timeout = 1000*60;
 
 
     private ContentQueueService contentQueueService = (ContentQueueService) SpringContextLoader.getBean("contentQueueService");
@@ -35,6 +36,8 @@ public class TaskStatusJob extends BaseJob {
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
+        contentQueueService.refreshBreakedQueue(timeout);
+
         int runningQueneNum = (int) contentQueueService.getRunningQueneNum();
         logger.info("当前运行任务数为:"+ runningQueneNum);
         int canAssignCount = batchSize - runningQueneNum;
@@ -51,6 +54,8 @@ public class TaskStatusJob extends BaseJob {
         contentQueueService.moveWaitingTaskToRunningQueue(requests);
         contentProcessService.processRequestList(requests);
         logger.info("本次任务分配结束:"+ requests.size());
+
+
         List<String> failList = contentQueueService.deleteBreakedQueue(timeout);
         for (String failContentKey : failList) {
             ContentBase contentBase = contentBaseService.getByContentKey(failContentKey);
